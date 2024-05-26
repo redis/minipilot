@@ -9,6 +9,7 @@ CFG_SECRET_KEY = os.getenv('CFG_SECRET_KEY', '1234567890abcdefghijklmnopqrstuvwx
 
 MINIPILOT_DEBUG = os.getenv('MINIPILOT_DEBUG',"True").lower() in ('true', '1', 't')
 MINIPILOT_LOG = os.getenv('MINIPILOT_LOG', './minipilot.log')
+MINIPILOT_ENDPOINT = os.getenv('MINIPILOT_ENDPOINT')
 
 MINIPILOT_HISTORY_TIMEOUT = os.getenv('MINIPILOT_HISTORY_TIMEOUT', 604800)
 MINIPILOT_HISTORY_LENGTH = os.getenv('MINIPILOT_HISTORY_LENGTH', 30)

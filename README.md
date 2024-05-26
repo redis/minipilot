@@ -65,7 +65,23 @@ python3 initialize.sh
 
 Complete the installation by
 
-1. Pointing your browser to `http://127.0.0.1:5005/`
+1. Pointing your browser to [http://127.0.0.1:5005/](http://127.0.0.1:5005/)
 2. From the `status` tab, make the new index current
 3. Start asking!
 
+
+## Rest API server
+
+Consult the Swagger REST API documentation at [http://127.0.0.1:5005/api](http://127.0.0.1:5005/api).
+
+The following endpoints deliver the chat, history, references and conversation reset services. 
+
+```
+curl -X POST 'http://127.0.0.1:5005/api/chat?q=suggest%20a%20horror%movie' -H 'accept: application/json' -H 'session-id: my-session-id'
+
+curl -X GET 'http://127.0.0.1:5005/api/history' -H 'accept: application/json' -H 'session-id: my-session-id'
+
+curl -X GET 'http://127.0.0.1:5005/api/references?q=recommend%20a%20movie' -H 'accept: application/json'
+
+curl -X 'POST' 'http://127.0.0.1:5005/api/reset' -H 'accept: application/json' -H 'session-id: my-session-id'
+```

@@ -6,7 +6,7 @@ from urllib.parse import urljoin
 import requests
 from flask import Blueprint, render_template, Response, request, session, stream_with_context
 from langchain.memory import RedisChatMessageHistory
-from src.common.config import MINIPILOT_HISTORY_TIMEOUT, REDIS_CFG
+from src.common.config import MINIPILOT_HISTORY_TIMEOUT, REDIS_CFG, MINIPILOT_ENDPOINT
 from src.common.utils import history_to_json, get_db, generate_redis_connection_string
 
 minipilot_bp = Blueprint('minipilot_bp', __name__,
@@ -44,7 +44,7 @@ def api():
 @minipilot_bp.route('/reset', methods=['POST'])
 @minipilot_session_required(request)
 def reset():
-    references_url = urljoin("http://localhost:5005", "api/reset")
+    references_url = urljoin(MINIPILOT_ENDPOINT, "api/reset")
     headers = {
         'session-id': session.get('minipilot_session_id')
     }
@@ -56,7 +56,7 @@ def reset():
 @minipilot_bp.route('/ask', methods=['GET','POST'])
 @minipilot_session_required(request)
 def ask():
-    chat_url = urljoin("http://localhost:5005", "api/chat")
+    chat_url = urljoin(MINIPILOT_ENDPOINT, "api/chat")
     headers = {
         'session-id': session.get('minipilot_session_id')
     }

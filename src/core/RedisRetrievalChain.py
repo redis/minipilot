@@ -1,3 +1,4 @@
+import json
 import logging
 import time
 
@@ -61,6 +62,16 @@ class RedisRetrievalChain(Core):
     def ask(self, question):
         self.question = question
         threading.Thread(target=self.__ask_question, args=(question, StreamingStdOutCallbackHandlerYield(self.queue))).start()
+
+
+    def references(self, q, results=0):
+        if results == 0:
+            results = MINIPILOT_CONTEXT_LENGTH
+
+        json_data = []
+        for doc in self.__get_retriever_with_score(results).invoke(q):
+            json_data.append(doc.json())
+        return json_data
 
 
     def reset_history(self):
