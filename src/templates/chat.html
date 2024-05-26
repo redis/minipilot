@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class='container pb-2 px-5'>
+    <div class="columns mt-4 mb-4">
+        <div class="column"></div>
+        <div class="column is-two-thirds">
+            <span id="conversation">
+            </span>
+        </div>
+        <div class="column"></div>
+    </div>
+</div>
+<footer class="footer">
+    <div class="columns">
+        <div class="column"></div>
+        <div class="column is-two-fifths">
+            {% include 'botbar.html' %}
+        </div>
+        <div class="column"></div>
+    </div>
+</footer>
+<script>
+    function bubbles_cb(){
+        $("input").val('');
+        $(".button").prop("disabled", true);
+    }
+
+    bubbles("{{ url_for('minipilot_bp.ask')}}", {{ history | safe }}, bubbles_cb);
+</script>
+{% endblock %}

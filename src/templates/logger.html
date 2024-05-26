@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 id="name" class="title is-4">Logger</h1>
+{% if logs is not none and logs|length > 0 %}
+<pre style="line-height: 1;">
+{% for log in logs %}
+    {{ log[1]['message'] }}
+{% endfor %}
+</pre>
+  {% else %}
+ <p>You have no logging information</p>
+  {% endif %}
+
+
+
+<script>
+    $("html, body").animate({ scrollTop: $(document).height() }, 500);
+</script>
+
+{% endblock %}

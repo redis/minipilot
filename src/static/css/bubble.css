@@ -1,0 +1,55 @@
+.bubble-left,
+.bubble-right {
+    display: block;
+    position: relative;
+    padding: 16px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    margin-bottom: 2em;
+    clear: both;
+}
+
+ul, ol{
+    padding-left: 5%;
+}
+
+.bubble-left {
+    float: left;
+    max-width:90%;
+    background-color: #FAFAFE;
+}
+
+.bubble-right {
+    float:right;
+    margin-left:10%
+    max-width:40%;
+    background-color: #666;
+    color:#FFFFFF;
+}
+
+#conversation code{
+    background-color: #E9EBFB;
+    font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    font-weight: 500;
+    letter-spacing: -0.2px;
+    color: #4E545B;
+    font-size: 18px;
+}
+
+#conversation p a{
+    color: #5866F6;
+}
+
+#conversation p a:hover{
+    color: #3728BA;
+}
+
+#conversation pre code{
+    color: #000000;
+    background-color: #F5F5F5;
+}
+
+#conversation p li{
+    margin-bottom: 10px:
+}

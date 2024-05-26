@@ -1,0 +1,56 @@
+/* sticky footer */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.spacer {
+  min-height: 60px;
+}
+
+.footer {
+    padding:0px 30px 0px 30px;
+    margin:0px;
+    height:95px;
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    right: 0;
+    z-index: 30;
+    background-color: #161f31;
+}
+
+.footer a{
+    color: #fff;
+}
+
+.footer a:hover{
+    color: #aaa;
+}
+
+body::-webkit-scrollbar{
+    display:none;
+}
+
+html{
+    scrollbar-width:none;
+}
+
+#wrapper {
+    flex: 1;
+}
+/* end of sticky footer */
+
+.disabled-link {
+    pointer-events: none;
+    color: #999;
+    text-decoration: none;
+    cursor: not-allowed;
+}
+

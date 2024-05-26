@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+    <head>
+        <meta charset="utf-8">
+        <link rel="shortcut icon" href="{{ url_for('minipilot_bp.static',filename='static/images/favicon-32x32.png') }}" type="image/x-icon" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="minipilot admin page">
+        <title>Minipilot</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+        <link rel="stylesheet" href="{{ url_for('minipilot_bp.static',filename='static/css/style.css') }}" type="text/css" media="all">
+        <link rel="stylesheet" href="{{ url_for('minipilot_bp.static',filename='static/css/bubble.css') }}" type="text/css" media="all">
+        <link rel="stylesheet" href="{{ url_for('minipilot_bp.static',filename='static/css/loading.css') }}" type="text/css" media="all">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+        <script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
+        <script type="text/javascript" src="{{ url_for('minipilot_bp.static',filename='static/js/minipilot.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('minipilot_bp.static',filename='static/js/bubble.js') }}"></script>
+    </head>
+
+    <body>
+        <div id="wrapper">
+            <section>
+                <nav class="p-1 mb-2 navbar is-transparent is-fixed-top" role="navigation" aria-label="main navigation">
+                    <div class="navbar-brand mr-6">
+                        <a href="{{ url_for('minipilot_bp.landing') }}" class="navbar-item">
+                            <img alt="minipilot logo" height="40px" src="{{ url_for('minipilot_bp.static',filename='static/images/minipilot.png') }}">
+                        </a>
+                        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" style="margin:0 0 0 auto">
+                            <span aria-hidden="true"></span>
+                            <span aria-hidden="true"></span>
+                            <span aria-hidden="true"></span>
+                        </a>
+                    </div>
+
+                    <div id="navbarBasicExample" class="navbar-menu is-expanded">
+                        <div class="navbar-start" style="flex: 0 0 50%;">
+                            <a href="{{ url_for('minipilot_bp.landing') }}" class="navbar-item">
+                                <span style="padding:6px;">chat</span>
+                            </a>
+                            <a href="{{ url_for('status_bp.status') }}" class="navbar-item">
+                                <span style="padding:6px;">status</span>
+                            </a>
+                            <a href="{{ url_for('cache_bp.cache') }}" class="navbar-item">
+                                <span style="padding:6px;">cache</span>
+                            </a>
+                            <a href="{{ url_for('minipilot_bp.logger') }}" class="navbar-item">
+                                <span style="padding:6px;">logger</span>
+                            </a>
+                        </div>
+
+                        <div class="navbar-end" style="flex: 0 0 15%;">
+                        </div>
+                  </div>
+                </nav>
+                <div class="container pt-6 pb-6" style="padding-left:20px; padding-right:20px;">
+                   {% block content %}
+                   {% endblock %}
+                </div>
+            </section>
+        </div>
+        <script>
+            $(document).ready(function() {
+                // Check for click events on the navbar burger icon
+                $(".navbar-burger").click(function() {
+                    // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+                    $(".navbar-burger").toggleClass("is-active");
+                    $(".navbar-menu").toggleClass("is-active");
+                });
+            });
+        </script>
+    </body>
+</html>
