@@ -18,9 +18,13 @@ Clone the repository
 git clone https://github.com/mortensi/MiniPilot.git
 ```
 
-Make sure you have an [OpenAI token](https://openai.com/api/pricing/), then install the requirements
+Make sure you have an [OpenAI token](https://openai.com/api/pricing/), then install the requirements in a Python virtual environment
 
 ```commandline
+python3 -m venv minipilot
+source minipilot/bin/activate
+
+cd minipilot
 pip install -r requirements.txt
 ```
 
@@ -40,12 +44,28 @@ OPENAI_API_KEY="your-openai-key"
 You can also use the `export` command.
 
 ```commandline
-export DB_SERVICE="127.0.0.1" DB_PORT=6379 DB_PWD="" MINIPILOT_DEBUG = "True" MINIPILOT_MODEL="gpt-3.5-turbo-16k" OPENAI_API_KEY="your-openai-key"
+export DB_SERVICE="127.0.0.1" DB_PORT=6379 DB_PWD="" MINIPILOT_DEBUG="True" MINIPILOT_MODEL="gpt-3.5-turbo-16k" OPENAI_API_KEY="your-openai-key"
 ```
 
-Start the server `./start.sh`
+Start the server. 
 
-Load the data with `python3 initialize.sh`
+> The first time, it may take up to two minutes: heavy embedding models will be downloaded.
 
-Point your browsert to `http://127.0.0.1:5005/` and start asking.
+```
+./start.sh
+```
+
+Load the database.
+
+> This is uploading 10,000 movies, it may take up to 20 minutes
+
+```
+python3 initialize.sh
+```
+
+Complete the installation by
+
+1. Pointing your browser to `http://127.0.0.1:5005/`
+2. From the `status` tab, make the new index current
+3. Start asking!
 
