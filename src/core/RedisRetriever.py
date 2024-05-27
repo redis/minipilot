@@ -17,8 +17,8 @@ class RedisRetriever(BaseRetriever):
                 "Movie Genre: " + metadata["genre"] + ". " +
                 "Movie Score: " + metadata["score"] + "." +
                 "Movie Country: " + metadata["country"] + "." +
-                "Movie Revenuw: " + metadata["revenue"] + "." +
-                "Movie Relase date: " + metadata["date_x"] + "."
+                "Movie Revenue: " + metadata["revenue"] + "." +
+                "Movie Release date: " + metadata["date_x"] + "."
         )
 
     def get_relevant_documents(self, query) -> []:

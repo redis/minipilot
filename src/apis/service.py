@@ -1,14 +1,12 @@
 import urllib
 
-from flask import request, jsonify, Response
-from flask_paginate import Pagination
-from flask_restx import Resource, Namespace, reqparse, inputs
+from flask import request, Response
+from flask_restx import Resource, Namespace, reqparse
 from langchain_community.chat_message_histories import RedisChatMessageHistory
-from redis.commands.search.query import Query
 
 from src.apis.validation import rate_limiter
-from src.common.config import MINIPILOT_SEARCH_RESULTS, REDIS_CFG, MINIPILOT_HISTORY_TIMEOUT
-from src.common.utils import get_db, parse_query_string, extract_keywords, generate_redis_connection_string, \
+from src.common.config import REDIS_CFG, MINIPILOT_HISTORY_TIMEOUT
+from src.common.utils import generate_redis_connection_string, \
     history_to_json
 from src.core.RedisRetrievalChain import RedisRetrievalChain
 
