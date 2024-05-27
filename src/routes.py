@@ -1,13 +1,13 @@
 import html
+import json
 import urllib
 import uuid
 from functools import wraps
 from urllib.parse import urljoin
 import requests
 from flask import Blueprint, render_template, Response, request, session, stream_with_context
-from langchain.memory import RedisChatMessageHistory
-from src.common.config import MINIPILOT_HISTORY_TIMEOUT, REDIS_CFG, MINIPILOT_ENDPOINT
-from src.common.utils import history_to_json, get_db, generate_redis_connection_string
+from src.common.config import MINIPILOT_ENDPOINT
+from src.common.utils import get_db
 
 minipilot_bp = Blueprint('minipilot_bp', __name__,
                       template_folder='./templates',
@@ -29,16 +29,18 @@ def minipilot_session_required(req):
 @minipilot_bp.route('/')
 @minipilot_session_required(request)
 def landing():
-    redis_history = RedisChatMessageHistory(url=generate_redis_connection_string(REDIS_CFG["host"], REDIS_CFG["port"], REDIS_CFG["password"]),
-                                            session_id=session.get('minipilot_session_id'),
-                                            key_prefix='minipilot:history:',
-                                            ttl=MINIPILOT_HISTORY_TIMEOUT)
-    return render_template('chat.html', history=history_to_json(redis_history.messages))
+    history_url = urljoin(MINIPILOT_ENDPOINT, "api/history")
+    headers = {
+        'session-id': session.get('minipilot_session_id')
+    }
 
+    history = requests.get(history_url, headers=headers, stream=False, verify=False)
+    new_json = []
+    for dict in json.loads(history.text):
+        dict['content'] = html.escape(dict['content'])
+        new_json.append(dict)
 
-@minipilot_bp.route('/api')
-def api():
-    pass
+    return render_template('chat.html', history=new_json)
 
 
 @minipilot_bp.route('/reset', methods=['POST'])
@@ -80,6 +82,11 @@ def ask():
         response.close()
 
     return Response(stream_with_context(generate()), content_type="text/event-stream", headers={'X-Accel-Buffering': 'no'})
+
+
+@minipilot_bp.route('/api')
+def api():
+    pass
 
 
 @minipilot_bp.route('/logger', methods=['GET','POST'])

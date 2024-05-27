@@ -9,12 +9,9 @@ import wtforms_json
 from redisvl.llmcache import SemanticCache
 
 from src.apis import api
-from src.common.config import REDIS_CFG, CFG_SECRET_KEY, MINIPILOT_CACHE_TTL, MINIPILOT_CACHE_THRESHOLD, MINIPILOT_DEBUG,  MINIPILOT_DEBUG
+from src.common.config import REDIS_CFG, CFG_SECRET_KEY, MINIPILOT_CACHE_TTL, MINIPILOT_CACHE_THRESHOLD,  MINIPILOT_DEBUG
 from src.common.logger import setup_logging
 from src.common.utils import generate_redis_connection_string
-
-from redis.commands.search.field import TextField, TagField, NumericField
-from redis.commands.search.indexDefinition import IndexDefinition, IndexType
 
 
 def create_app():
