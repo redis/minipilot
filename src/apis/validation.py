@@ -1,10 +1,6 @@
 import datetime
-import logging
-import secrets
 from functools import wraps
-
 from flask import Response, request
-from redis.commands.search.query import Query
 
 from src.common.config import MINIPILOT_RATE_LIMITER_ENABLED, MINIPILOT_RATE_LIMITER_CRITERIA, MINIPILOT_RATE_LIMITER_ALLOW
 from src.common.utils import get_db

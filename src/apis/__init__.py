@@ -1,5 +1,4 @@
 from flask_restx import Api
-
 from .service import api as ns_service
 
 authorizations = {
@@ -12,8 +11,8 @@ authorizations = {
 
 api = Api(
     title='Minipilot Server REST API',
-    version='1.0',
-    description='Welcome to the Minipilot Server REST API. Use this API to train your GenAI chatbot with online docs',
+    version='0.1',
+    description='Welcome to the Minipilot Server REST API',
     doc='/api',
     prefix='/api',
     authorizations=authorizations,
