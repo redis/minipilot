@@ -28,7 +28,7 @@ cd minipilot
 pip install -r requirements.txt
 ```
 
-Then set the environment variables in a `.env` file.
+Then set the environment variables in a `.env` file. Note that the software leverages the embedded REST API Server, then  configure the variable MINIPILOT_ENDPOINT="http://localhost:5005" or using the desired port.
 
 ```commandline
 DB_SERVICE="127.0.0.1"
@@ -37,6 +37,7 @@ DB_PWD=""
 
 MINIPILOT_DEBUG = "True"
 MINIPILOT_MODEL="gpt-3.5-turbo-16k"
+MINIPILOT_ENDPOINT="http://localhost:5005"
 
 OPENAI_API_KEY="your-openai-key"
 ```
@@ -44,7 +45,7 @@ OPENAI_API_KEY="your-openai-key"
 You can also use the `export` command.
 
 ```commandline
-export DB_SERVICE="127.0.0.1" DB_PORT=6379 DB_PWD="" MINIPILOT_DEBUG="True" MINIPILOT_MODEL="gpt-3.5-turbo-16k" OPENAI_API_KEY="your-openai-key"
+export DB_SERVICE="127.0.0.1" DB_PORT=6379 DB_PWD="" MINIPILOT_DEBUG="True" MINIPILOT_MODEL="gpt-3.5-turbo-16k" MINIPILOT_ENDPOINT="http://localhost:5005" OPENAI_API_KEY="your-openai-key"
 ```
 
 Start the server. 
