@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class='container pb-2 px-5' xmlns="http://www.w3.org/1999/html">
+    <h1 id="name" class="title is-4 pb-3">Prompts</h1>
+    <table class="table is-fullwidth is-hoverable">
+        <thead>
+        <tr>
+            <th>Prompt</th>
+            <th>Content</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                {{system['title']}}
+            </td>
+            <td style="width:70%;">
+                <textarea style="width:100%; padding:1em;" id="system">{{system['content']}}</textarea>
+                <a class="mr-2 save_idx_anchor"
+                   href="{{ url_for('prompt_bp.save',prompt=system['category'],  _external=True) }}">
+                    Save
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{user['title']}}
+            </td>
+            <td style="width:70%;">
+                <textarea style="width:100%; padding:1em;" id="user">{{user['content']}}</textarea>
+                <a class="mr-2 save_idx_anchor"
+                   href="{{ url_for('prompt_bp.save',prompt=user['category'],  _external=True) }}">
+                    Save
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <script>
+        $('textarea').each(function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+
+        $('.save_idx_anchor').click(function(event) {
+            event.preventDefault();
+            var href = $(this).attr("href");
+            var url = new URL(href);
+            var prompt = url.searchParams.get('prompt');
+
+            $.ajax({
+                type: "POST",
+                url: "{{ url_for('prompt_bp.save')}}",
+                dataType: "json",
+                data: JSON.stringify({"prompt": prompt, "content": $('#' + prompt).val()}),
+                contentType: "application/json",
+                success: function(data) {
+                    $.notify(data["message"], "success");
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $.notify(JSON.parse(jqXHR.responseText)['message'], 'error');
+                }
+            })
+        });
+
+    </script>
+    {% endblock %}

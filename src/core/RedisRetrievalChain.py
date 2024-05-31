@@ -1,4 +1,3 @@
-import json
 import logging
 import time
 
@@ -16,7 +15,6 @@ import threading
 from langchain_core.messages import BaseMessage
 
 from src.core.RedisRetriever import RedisRetriever
-from src.core.prompts import system_prompt, new_template
 from src.core.RedisRetrieverWithScore import RedisRetrieverWithScore
 from src.core.StreamingStdOutCallbackHandlerYield import StreamingStdOutCallbackHandlerYield, STOP_ITEM
 from src.common.config import REDIS_CFG, MINIPILOT_HISTORY_TIMEOUT, MINIPILOT_MODEL, MINIPILOT_LLM_TIMEOUT, \
@@ -32,6 +30,7 @@ class RedisRetrievalChain(Core):
         self.queue = queue.Queue()
         self.model = MINIPILOT_MODEL
         self.llmcache = current_app.llmcache
+        self.prompt_manager = current_app.prompt_manager
         self.embedding_model = OpenAIEmbeddings()
 
         self.index_schema = {
@@ -132,8 +131,8 @@ class RedisRetrievalChain(Core):
             return inputs
 
         messages = [
-            SystemMessagePromptTemplate.from_template(system_prompt),
-            HumanMessagePromptTemplate.from_template(new_template)
+            SystemMessagePromptTemplate.from_template(self.prompt_manager.get_system_prompt()['content']),
+            HumanMessagePromptTemplate.from_template(self.prompt_manager.get_user_prompt()['content'])
         ]
 
         qa_prompt = ChatPromptTemplate.from_messages(messages)

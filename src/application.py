@@ -1,17 +1,22 @@
+import importlib
 import logging
+import os
 from http.client import HTTPException
 
 import redis
 from flask import Flask, render_template
 from flask_cors import CORS
 from flask_session import Session
-import wtforms_json
+from redis.commands.search.field import TextField, NumericField
+from redis.commands.search.indexDefinition import IndexDefinition
 from redisvl.llmcache import SemanticCache
 
 from src.apis import api
+from src.common.PluginManager import PluginManager
 from src.common.config import REDIS_CFG, CFG_SECRET_KEY, MINIPILOT_CACHE_TTL, MINIPILOT_CACHE_THRESHOLD,  MINIPILOT_DEBUG
 from src.common.logger import setup_logging
-from src.common.utils import generate_redis_connection_string
+from src.common.utils import generate_redis_connection_string, get_db
+from src.prompt.PromptManager import PromptManager
 
 
 def create_app():
@@ -26,7 +31,6 @@ def create_app():
     app.url_map.strict_slashes = False
     CORS(app)
     Session(app)
-    wtforms_json.init()
 
     # Configuring the RedisVL semantic cache
     llmcache = SemanticCache(
@@ -39,8 +43,27 @@ def create_app():
 
     app.llmcache = llmcache
 
+    # Creating the connection pool for the whole server
+    try:
+        app.pool = redis.ConnectionPool(host=REDIS_CFG["host"],
+                                        port=REDIS_CFG["port"],
+                                        password=REDIS_CFG["password"],
+                                        decode_responses=True)
+    except redis.exceptions.ConnectionError:
+        print("error connecting to Redis")
+
+    # Load plugins
+    plugin_manager = PluginManager(app)
+    plugin_manager.load_plugins()
+
+    # Load prompts
+    app.prompt_manager = PromptManager(app)
+
     # Configuring the REST API
     api.init_app(app)
+
+    # As the functions says, setup logging
+    setup_logging(app)
 
     @app.after_request
     def add_header(r):
@@ -50,26 +73,18 @@ def create_app():
         r.headers['Cache-Control'] = 'public, max-age=0'
         return r
 
-    try:
-        app.pool = redis.ConnectionPool(host=REDIS_CFG["host"],
-                                        port=REDIS_CFG["port"],
-                                        password=REDIS_CFG["password"],
-                                        decode_responses=True)
-
-    except redis.exceptions.ConnectionError:
-        print("error connecting to Redis")
-
     from .routes import minipilot_bp
     app.register_blueprint(minipilot_bp)
 
     from .cache.routes import cache_bp
     app.register_blueprint(cache_bp)
 
+    from .prompt.routes import prompt_bp
+    app.register_blueprint(prompt_bp)
+
     from .status.routes import status_bp
     app.register_blueprint(status_bp)
 
-    # As the functions says, setup logging
-    setup_logging(app)
 
     if not MINIPILOT_DEBUG:
         @app.errorhandler(Exception)
