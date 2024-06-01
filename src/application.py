@@ -1,21 +1,17 @@
-import importlib
 import logging
-import os
 from http.client import HTTPException
 
 import redis
 from flask import Flask, render_template
 from flask_cors import CORS
 from flask_session import Session
-from redis.commands.search.field import TextField, NumericField
-from redis.commands.search.indexDefinition import IndexDefinition
 from redisvl.llmcache import SemanticCache
 
 from src.apis import api
 from src.common.PluginManager import PluginManager
 from src.common.config import REDIS_CFG, CFG_SECRET_KEY, MINIPILOT_CACHE_TTL, MINIPILOT_CACHE_THRESHOLD,  MINIPILOT_DEBUG
 from src.common.logger import setup_logging
-from src.common.utils import generate_redis_connection_string, get_db
+from src.common.utils import generate_redis_connection_string, read_index_schema
 from src.prompt.PromptManager import PromptManager
 
 
@@ -62,8 +58,12 @@ def create_app():
     # Configuring the REST API
     api.init_app(app)
 
+    # Read index schema
+    app.index_schema = read_index_schema(app.pool, "minipilot_rag_alias")
+
     # As the functions says, setup logging
     setup_logging(app)
+
 
     @app.after_request
     def add_header(r):

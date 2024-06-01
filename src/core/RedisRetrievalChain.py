@@ -31,16 +31,8 @@ class RedisRetrievalChain(Core):
         self.model = MINIPILOT_MODEL
         self.llmcache = current_app.llmcache
         self.prompt_manager = current_app.prompt_manager
+        self.index_schema = current_app.index_schema
         self.embedding_model = OpenAIEmbeddings()
-
-        self.index_schema = {
-            "tag": [{"name": "genre"},
-                    {"name": "country"}],
-            "text": [{"name": "names"}],
-            "numeric": [{"name": "revenue"},
-                        {"name": "score"},
-                        {"name": "date_x"}]
-        }
 
         self.rds = Redis.from_existing_index(
             self.embedding_model,
@@ -121,10 +113,6 @@ class RedisRetrievalChain(Core):
         if (history_length > MINIPILOT_HISTORY_LENGTH):
             redis_history.redis_client.rpop(redis_history.key, history_length - MINIPILOT_HISTORY_LENGTH)
 
-        redis_memory = ConversationBufferMemory(memory_key="chat_history",
-                                                chat_memory=redis_history,
-                                                return_messages=True)
-
         # Chatbot with custom history, here we choose a non-streaming LLM, or we will get the condensed question
         # in the callback
         def get_chat_history(inputs) -> str:
@@ -159,14 +147,7 @@ class RedisRetrievalChain(Core):
             result = chatbot.invoke({"question": q, "chat_history": redis_history})
             references = {}
             for doc in result['source_documents']:
-                references[doc.metadata['id'].split('idx:')[-1]] = {
-                                                                    'title': doc.metadata['names'].strip().replace('\n', ''),
-                                                                    'genre': doc.metadata['genre'],
-                                                                    'country': doc.metadata['country'],
-                                                                    'revenue': doc.metadata['revenue'],
-                                                                    'score': doc.metadata['score'],
-                                                                    'date_x': doc.metadata['date_x']
-                                                                 }
+                references[doc.metadata['id'].split('idx:')[-1]] = doc.metadata
 
             redis_history.add_user_message(result["question"])
             redis_history.add_message(BaseMessage(content=result["answer"], type="ai", additional_kwargs=references))

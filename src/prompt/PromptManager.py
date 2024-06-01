@@ -25,11 +25,11 @@ class PromptManager:
         return
 
     def get_user_prompt(self):
-        data = self.conn.hgetall(f'minipilot:prompt:user')
+        data = self.conn.hgetall('minipilot:prompt:user')
         return data
 
     def get_system_prompt(self):
-        data = self.conn.hgetall(f'minipilot:prompt:system')
+        data = self.conn.hgetall('minipilot:prompt:system')
         return data
 
     def update_prompt(self, data):

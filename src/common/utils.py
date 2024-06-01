@@ -3,6 +3,21 @@ import redis
 from flask import current_app, redirect, url_for
 
 
+def read_index_schema(pool, index_name):
+    try:
+        index_schema = {"tag": [], "text": [], "numeric": []}
+        idx_info = redis.Redis(connection_pool=pool, decode_responses=True).ft(index_name).info()
+        for field in idx_info['attributes']:
+            attribute_name = field[1]
+            attribute_type = field[5].lower()
+            if attribute_type in index_schema:
+                index_schema[attribute_type].append({"name": attribute_name})
+        return index_schema
+    except Exception as e:
+        print(f"read_index_schema error {e}")
+        return None
+
+
 def history_to_json(input_string):
     json_data = []
     for conv in input_string:
