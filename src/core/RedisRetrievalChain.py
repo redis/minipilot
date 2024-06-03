@@ -4,7 +4,7 @@ import time
 from flask import current_app
 from langchain.chains import ConversationalRetrievalChain
 from langchain.embeddings import OpenAIEmbeddings
-from langchain.memory import RedisChatMessageHistory, ConversationBufferMemory
+from langchain.memory import RedisChatMessageHistory
 from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 from langchain.vectorstores.redis import Redis
 from langchain.chat_models import ChatOpenAI
@@ -18,7 +18,7 @@ from src.core.RedisRetriever import RedisRetriever
 from src.core.RedisRetrieverWithScore import RedisRetrieverWithScore
 from src.core.StreamingStdOutCallbackHandlerYield import StreamingStdOutCallbackHandlerYield, STOP_ITEM
 from src.common.config import REDIS_CFG, MINIPILOT_HISTORY_TIMEOUT, MINIPILOT_MODEL, MINIPILOT_LLM_TIMEOUT, \
-    MINIPILOT_HISTORY_LENGTH, MINIPILOT_CONTEXT_LENGTH, MINIPILOT_CACHE_ENABLED
+    MINIPILOT_HISTORY_LENGTH, MINIPILOT_CONTEXT_LENGTH, MINIPILOT_CACHE_ENABLED, MINIPILOT_DEBUG
 from src.common.utils import generate_redis_connection_string
 from src.core.Core import Core
 
@@ -87,9 +87,6 @@ class RedisRetrievalChain(Core):
                 callback_fn.q.put(cached[0]['response'])
                 callback_fn.q.put(STOP_ITEM)
 
-                # Increase a score
-                self.rate_cache_item(cached[0]['id'])
-
                 # The question is in the cache, but I want to save the conversation in the history too
                 metadata = {}
                 if 'metadata' in cached[0]:
@@ -137,7 +134,7 @@ class RedisRetrievalChain(Core):
                                                         get_chat_history=get_chat_history,
                                                         rephrase_question=False,
                                                         return_generated_question=True,
-                                                        verbose=False,
+                                                        verbose=MINIPILOT_DEBUG,
                                                         return_source_documents=True,
                                                         condense_question_llm = ChatOpenAI(temperature=0, model=self.model),
                                                         combine_docs_chain_kwargs={'prompt': qa_prompt})

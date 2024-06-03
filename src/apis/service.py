@@ -60,7 +60,7 @@ class ChatHistoryReset(Resource):
 @api.route('/chat')
 class Chat(Resource):
     service_query_parser = reqparse.RequestParser()
-    service_query_parser.add_argument('q', type=validate_length(4, 500), required=True, help='Chat query', location='args')
+    service_query_parser.add_argument('q', type=validate_length(2, 500), required=True, help='Chat query', location='args')
 
     @api.expect(service_query_parser)
     @api.doc(params={'session-id': {'in': 'header', 'description': 'session-id'}})

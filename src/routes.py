@@ -67,7 +67,7 @@ def ask():
         'q': urllib.parse.unquote(request.form['q'])
     }
 
-    if (len(urllib.parse.unquote(request.form['q'])) < 3):
+    if (len(urllib.parse.unquote(request.form['q'])) < 2):
         return Response("Please, refine your question"), 400
 
     if (len(urllib.parse.unquote(request.form['q'])) > 500):

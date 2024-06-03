@@ -1,0 +1,42 @@
+<div class="modal delete_idx_modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+          <p class="modal-card-title">
+              <span style="font-weight: bold;" class="is-size-6">Drop an index</span>
+          </p>
+        <button class="delete closeredirect" aria-label="close"></button>
+      </header>
+      <section class="modal-card-body">
+          <div class="sourcebody">
+              <div class="field is-horizontal">
+                  This will drop the index and all the indexed documents by this index. Are you sure?
+              </div>
+
+            <div class="field is-grouped is-grouped-right">
+                <div class="control">
+                    <a style="display:block;" class="button is-link is-small is-danger delete_idx_btn">
+                        Delete
+                    </a>
+                </div>
+                <div class="control">
+                    <a style="display:block;" id="closeredirect" class="closeredirect button is-light is-small" href="{{ url_for('data_bp.data') }}">
+                        Cancel
+                    </a>
+                </div>
+            </div>
+          </div>
+      </section>
+      <footer class="modal-card-foot">
+      </footer>
+    </div>
+</div>
+
+<script>
+    var url;
+	$(".delete_idx_anchor").click(function(e){
+		$(".delete_idx_modal").addClass("is-active");
+        $(".delete_idx_btn").attr("href", $(this).attr("href"));
+		return false;
+	})
+</script>

@@ -1,10 +1,14 @@
 import logging
+import os
 from http.client import HTTPException
 
 import redis
-from flask import Flask, render_template
+from celery import Celery, Task
+from flask import Flask, render_template, send_from_directory
 from flask_cors import CORS
 from flask_session import Session
+from redis.commands.search.field import TextField, TagField, NumericField
+from redis.commands.search.indexDefinition import IndexDefinition, IndexType
 from redisvl.llmcache import SemanticCache
 
 from src.apis import api
@@ -24,16 +28,20 @@ def create_app():
     app.config['SESSION_COOKIE_NAME'] = 'minipilot'
     app.config['SESSION_REDIS'] = redis.StrictRedis(host=REDIS_CFG["host"], port=REDIS_CFG["port"], password=REDIS_CFG["password"])
     app.config['USE_REDIS_CONNECTION_POOL'] = True
+    app.config['UPLOAD_FOLDER'] = os.path.abspath(os.path.join(os.path.dirname(__file__), '../assets'))
     app.url_map.strict_slashes = False
     CORS(app)
     Session(app)
+
+    # celery configuration
+    redis_url = generate_redis_connection_string(REDIS_CFG["host"], REDIS_CFG["port"], REDIS_CFG["password"])
 
     # Configuring the RedisVL semantic cache
     llmcache = SemanticCache(
         name="minipilot_cache_idx",
         prefix="minipilot:cache:item",
         ttl=MINIPILOT_CACHE_TTL,
-        redis_url=generate_redis_connection_string(REDIS_CFG["host"], REDIS_CFG["port"], REDIS_CFG["password"]),
+        redis_url=redis_url,
         distance_threshold=MINIPILOT_CACHE_THRESHOLD
     )
 
@@ -82,8 +90,22 @@ def create_app():
     from .prompt.routes import prompt_bp
     app.register_blueprint(prompt_bp)
 
-    from .status.routes import status_bp
-    app.register_blueprint(status_bp)
+    from .data.routes import data_bp
+    app.register_blueprint(data_bp)
+
+    @app.route('/assets/<filename>')
+    def serve_file(filename):
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+    conn = redis.StrictRedis(connection_pool=app.pool)
+    indexes = conn.execute_command("FT._LIST")
+    if "minipilot_data_idx" not in indexes:
+        app.logger.info("The index minipilot_data_idx does not exist, creating it")
+        index_def = IndexDefinition(prefix=["minipilot:data:"], index_type=IndexType.HASH)
+        schema = (TextField("description", as_name="description"),
+                  TagField("filename", as_name="filename"),
+                  NumericField("uploaded", as_name="uploaded"))
+        conn.ft('minipilot_data_idx').create_index(schema, definition=index_def)
 
 
     if not MINIPILOT_DEBUG:

@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class='container pb-2 px-5' xmlns="http://www.w3.org/1999/html">
+    <h1 id="name" class="title is-4 pb-3">Data</h1>
+
+    <div class="columns">
+        <div class="column">
+            <div class="box">
+            <h2 class="title is-5">Files</h2>
+            <form id="upload" class="mb-4" method="post" action="{{ url_for('data_bp.upload') }}" enctype="multipart/form-data">
+                <div class="field has-addons">
+                    <div class="control is-expanded">
+                        <div id="file-upload" class="file has-name is-fullwidth mb-3">
+                            <label class="file-label">
+                                <input class="file-input" type="file" name="asset">
+                                <span class="file-cta">
+                                    <span class="file-label">
+                                        Upload a CSV file
+                                    </span>
+                                </span>
+                                <span class="file-name">
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="control">
+                        <button type="submit" class="button is-dark">Submit</button>
+                    </div>
+                </div>
+            </form>
+
+            <div>
+                {% if data is not none and data|length > 0%}
+                <table class="table is-fullwidth is-hoverable">
+                    <colgroup>
+                        <col style="width: 150px;">
+                        <col>
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Index</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for asset in data %}
+                    <tr>
+                        <td style="word-wrap:break-word; word-break:break-all; white-space:normal; width:70%;">
+                            <a href="{{ url_for('serve_file', filename=asset.filename, _external=True) }}" target="_blank">
+                                {{asset.filename}}
+                            </a>
+                        </td>
+                        <td>
+                            <a class="create_idx_anchor" style="display:block;" href="{{ url_for('data_bp.idx_create', id=asset.id) }}">
+                                index
+                            </a>
+                        </td>
+                        <td>
+                            <a style="display:block;" href="{{ url_for('data_bp.remove_file', id=asset.id) }}">
+                                delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>There is no stored asset</p>
+                {% endif %}
+            </div>
+            </div>
+
+            <div class="box">
+            <h2 class="title is-5">Semantic indexes</h2>
+            {% if idx_overview|length > 0 %}
+            <table class="table is-fullwidth is-hoverable">
+                <thead>
+                <tr>
+                    <th>Index</th>
+                    <th>Current</th>
+                    <th>Docs</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for idx in idx_overview %}
+                <tr>
+                    <td style="word-wrap: break-word; word-break: break-all; white-space: normal; width:70%">
+                        {{idx['name']}}
+                    </td>
+                    <td>
+                        {% if idx['is_current']==true %}
+                        &#10004;
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{idx['docs']}}
+                    </td>
+                    <td>
+                        {% if idx['is_current']==false %}
+                        <a class="mr-5" href="{{ url_for('data_bp.idx_current',name=idx['name']) }}">
+                            Make current
+                        </a>
+                        <a class="delete_idx_anchor" href="{{ url_for('data_bp.idx_delete',name=idx['name']) }}">
+                            Delete
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>You have no semantic index, create one</p>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% include 'deleteidx.html' %}
+    {% include 'createidx.html' %}
+
+    {% endblock %}

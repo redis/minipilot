@@ -1,13 +1,17 @@
 # MiniPilot
 
-This application implements a chatbot you can train with your data. The example provided is a movie recommender system.
+This application implements a chatbot you can train with your data. From the GUI you will be able to:
+
+- Upload CSV data
+- Create an index
+- Edit the system and user prompt
+- Ask questions in natutal language
 
 ![demo](src/static/images/minipilot.gif)
 
 The system uses:
 
 - Redis Stack as a Vector Database to store the dataset and vectorize the entries to perform [Vector Similarity Search (VSS)](https://redis.io/docs/latest/develop/interact/search-and-query/advanced-concepts/vectors/) for RAG
-- The [IMDB movies dataset](https://www.kaggle.com/datasets/ashpalsingh1525/imdb-movies-dataset), which contains 10000+ movies from the IMDB Movies dataset
 - OpenAI ChatGPT Large Language Model (LLM) [ChatCompletion API](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
 
 ## setup
@@ -56,19 +60,12 @@ Start the server.
 ./start.sh
 ```
 
-Load the database.
+## Configuring MiniPilot
 
-> This is uploading 10,000 movies, it may take up to 20 minutes
-
-```
-python3 initialize.sh
-```
-
-Complete the installation by
-
-1. Pointing your browser to [http://127.0.0.1:5005/](http://127.0.0.1:5005/)
-2. From the `status` tab, make the new index current
-3. Start asking!
+1. point your browser to [http://127.0.0.1:5005/](http://127.0.0.1:5005/)
+2. From the `data` tab, load a CSV dataset, and index it. You can try the [IMDB movies dataset](https://www.kaggle.com/datasets/ashpalsingh1525/imdb-movies-dataset)
+3. From the `prompts` tab, edit the system and user prompts and save them
+4. Start asking!
 
 
 ## Rest API server

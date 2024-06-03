@@ -14,20 +14,14 @@ class RedisRetrieverWithScore(BaseRetriever):
     def combine_metadata(self, doc) -> str:
         metadata = doc[0].metadata
         return (
-                "Movie Title: " + metadata["names"] + ". " +
-                "Movie Genre: " + metadata["genre"] + ". " +
-                "Movie Score: " + metadata["score"] + "." +
-                "Movie Country: " + metadata["country"] + "." +
-                "Movie Revenue: " + metadata["revenue"] + "." +
-                "Movie Release date: " + metadata["date_x"] + "."
+            '\n'.join([f"{key}: {value}" for key, value in metadata.items()])
         )
 
     def get_relevant_documents(self, query) -> []:
         docs = []
         for doc in self.vectorstore.similarity_search_with_relevance_scores(query, k=self.context, score_threshold=MINIPILOT_RELEVANCE_SCORE):
-            content = self.combine_metadata(doc)
             docs.append(Document(
-                page_content=doc[0].page_content + content,
+                page_content=doc[0].page_content + self.combine_metadata(doc),
                 metadata=doc[0].metadata
             ))
         return docs

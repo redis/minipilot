@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class='container pb-2 px-5' xmlns="http://www.w3.org/1999/html">
+    <h1 id="name" class="title is-4 pb-3">Index Preview</h1>
+
+    <div class="columns">
+        <div class="column">
+            <div class="box">
+
+                <div>
+                    {% if columns is not none and columns|length > 0%}
+                    <table class="table is-fullwidth is-hoverable">
+                        <colgroup>
+                            <col style="width: 150px;">
+                            <col>
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Metadata</th>
+                            <th>Field type</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for colum in columns %}
+                        <tr>
+                            <td style="word-wrap:break-word; word-break:break-all; white-space:normal; width:70%;">
+                                {{colum}}
+                            </td>
+                            <td>
+                                <input type="checkbox"/>
+                            </td>
+                            <td>
+                                <p class="control">
+                                <div class="select">
+                                    <select id="element">
+                                        <option value="text" selected>TEXT</option>
+                                        <option value="tag">TAG</option>
+                                        <option value="numeric">NUMERIC</option>
+                                        <option value="geo">GEO</option>
+                                        <option value="vector">VECTOR</option>
+                                    </select>
+                                </div>
+                                </p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p>There is no stored asset</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'deleteidx.html' %}
+    {% include 'createidx.html' %}
+
+    {% endblock %}

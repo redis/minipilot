@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 import redis
 from flask import current_app, redirect, url_for
@@ -25,7 +26,7 @@ def history_to_json(input_string):
     return json_data
 
 
-def generate_redis_connection_string(url, port, password=None):
+def generate_redis_connection_string(url="127.0.0.1", port=6379, password=None):
     if password:
         connection_string = f"redis://:{password}@{url}:{port}"
     else:
@@ -62,3 +63,11 @@ def milliseconds_to_time_ago(milliseconds):
     else:
         days = seconds / 86400
         return f"{int(days)} days ago"
+
+
+def get_filename_without_extension(file_path):
+    # Extract the filename from the path
+    filename_with_extension = os.path.basename(file_path)
+    # Remove the extension
+    filename_without_extension = os.path.splitext(filename_with_extension)[0]
+    return filename_without_extension
