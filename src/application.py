@@ -33,7 +33,14 @@ def create_app():
     CORS(app)
     Session(app)
 
-    # celery configuration
+    # Check if the folder exists
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
+        print(f"Folder '{app.config['UPLOAD_FOLDER']}' created.")
+    else:
+        print(f"Folder '{app.config['UPLOAD_FOLDER']}' already exists.")
+
+    # Redis configuration
     redis_url = generate_redis_connection_string(REDIS_CFG["host"], REDIS_CFG["port"], REDIS_CFG["password"])
 
     # Configuring the RedisVL semantic cache
