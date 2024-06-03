@@ -90,4 +90,4 @@ def threaded_task(filename):
                                  index_name=index_name,
                                  index_schema=index_schema,
                                  vector_schema=vector_schema,
-                                 redis_url=generate_redis_connection_string())
+                                 redis_url=generate_redis_connection_string(REDIS_CFG["host"], REDIS_CFG["port"], REDIS_CFG["password"]))

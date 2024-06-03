@@ -3,7 +3,6 @@ import os
 from http.client import HTTPException
 
 import redis
-from celery import Celery, Task
 from flask import Flask, render_template, send_from_directory
 from flask_cors import CORS
 from flask_session import Session
@@ -113,7 +112,6 @@ def create_app():
                   TagField("filename", as_name="filename"),
                   NumericField("uploaded", as_name="uploaded"))
         conn.ft('minipilot_data_idx').create_index(schema, definition=index_def)
-
 
     if not MINIPILOT_DEBUG:
         @app.errorhandler(Exception)
