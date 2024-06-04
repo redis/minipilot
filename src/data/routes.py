@@ -41,7 +41,7 @@ def data():
         else:
             # The path exists only in the database. The application has lost the asset
             # or the container was recreated. Remove the file
-            get_db().delete(f"minipilot:data:{asset.id}")
+            get_db().delete(asset.id)
 
 
     # Get indexes
