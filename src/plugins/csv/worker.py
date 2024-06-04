@@ -15,9 +15,8 @@ from src.common.utils import generate_redis_connection_string, get_filename_with
 def threaded_task(filename):
     conn = redis.StrictRedis(host=REDIS_CFG["host"], port=REDIS_CFG["port"], password=REDIS_CFG["password"])
 
-    # Create a new index, named by CSV file
-    # you may choose the datatime too, like datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-    index_name = f"minipilot_rag_{get_filename_without_extension(filename)}_idx"
+    # Create a new index, named by CSV file and datetime
+    index_name = f"minipilot_rag_{get_filename_without_extension(filename)}_{datetime.now().strftime('%Y%m%d_%H%M%S')}_idx"
 
     index_schema = None
 

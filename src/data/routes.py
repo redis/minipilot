@@ -112,6 +112,11 @@ def upload():
         print('No selected file')
         return redirect(url_for("data_bp.data"))
     if file:
+        path = os.path.join(current_app.config['UPLOAD_FOLDER'], secure_filename(file.filename))
+        # The file with filename exists, return
+        if os.path.isfile(path):
+            return redirect(url_for("data_bp.data"))
+        # Only CSV accepted as of now
         if file.mimetype == 'text/csv':
             filename = secure_filename(file.filename)
             print(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
