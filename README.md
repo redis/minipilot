@@ -5,7 +5,7 @@ This application implements a chatbot you can train with your data. From the GUI
 - Upload CSV data
 - Create an index
 - Edit the system and user prompt
-- Ask questions in natutal language
+- Ask questions in natural language
 
 ![demo](src/static/images/minipilot.gif)
 
@@ -14,15 +14,44 @@ The system uses:
 - Redis Stack as a Vector Database to store the dataset and vectorize the entries to perform [Vector Similarity Search (VSS)](https://redis.io/docs/latest/develop/interact/search-and-query/advanced-concepts/vectors/) for RAG
 - OpenAI ChatGPT Large Language Model (LLM) [ChatCompletion API](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
 
-## setup
+## Requirements
 
-Clone the repository 
+First, [create your OpenAI token](https://platform.openai.com/docs/quickstart). 
+
+Then, decide where you want to run your Redis Stack instance.
+
+- Create a free 30MB [Redis Cloud subscription](https://redis.io/try-free/)
+- Install Redis Stack [on your laptop](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/)
+- Run a [Redis Stack Docker container](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/docker/). 
+
+## Docker setup
+
+Once you have your OpenAI token and a Redis Stack database available, pull the [MiniPilot container](https://hub.docker.com/r/ortolano/minipilot) and run it.
+
+```commandline
+docker run -d --cap-add sys_resource --env DB_SERVICE="host.docker.internal" --env DB_PORT=6379 --env DB_PWD="your-redis-password" --env DB_SSL="True" --env OPENAI_API_KEY="your-openai-key" --env MINIPILOT_ENDPOINT="http://127.0.0.1:8000" --name minipilot -p 5007:8000 ortolano/minipilot:0.1
+```
+
+Explanation of the environment follows.
+
+```commandline
+DB_SERVICE             The hostname or IP address of your Redis Stack instance or Redis Cloud database
+DB_PORT                The port of your Redis Stack instance or Redis Cloud database
+DB_PWD                 The password of your Redis Stack instance or Redis Cloud database
+DB_SSL                 If you would like to connect using SSL (mandatory for Redis Cloud databases)
+OPENAI_API_KEY         Your OpenAI token
+MINIPILOT_ENDPOINT     MiniPilot is a REST API service, but the internal chat interface uses the REST API too on the default exposed port 8000. You can just leave http://127.0.0.1:8000
+```
+
+## Local setup
+
+If you prefer to run MiniPilot on your laptop, just clone the repository.
 
 ```commandline
 git clone https://github.com/mortensi/MiniPilot.git
 ```
 
-Make sure you have an [OpenAI token](https://openai.com/api/pricing/), then install the requirements in a Python virtual environment
+Install the requirements in a Python virtual environment
 
 ```commandline
 python3 -m venv minipilot
