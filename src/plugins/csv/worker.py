@@ -50,7 +50,6 @@ def threaded_task(filename):
         embedding_model = OpenAIEmbeddings(model="text-embedding-ada-002")
     except Exception as e:
         logging.error(e)
-        return
 
     # https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them
     # 1 token ~= 4 chars in English

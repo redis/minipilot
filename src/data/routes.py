@@ -34,8 +34,14 @@ def data():
         .paging(0, RESULTS))
 
     for asset in rs.docs:
-        asset.id = asset.id.split(":")[-1]
-        data.append(asset)
+        path = os.path.join(current_app.config['UPLOAD_FOLDER'], asset.filename)
+        if os.path.isfile(path):
+            asset.id = asset.id.split(":")[-1]
+            data.append(asset)
+        else:
+            # The path exists only in the database. The application has lost the asset
+            # or the container was recreated. Remove the file
+            get_db().delete(f"minipilot:data:{asset.id}")
 
 
     # Get indexes

@@ -8,11 +8,13 @@ from flask_cors import CORS
 from flask_session import Session
 from redis.commands.search.field import TextField, TagField, NumericField
 from redis.commands.search.indexDefinition import IndexDefinition, IndexType
-from redisvl.llmcache import SemanticCache
+from redisvl.extensions.llmcache import SemanticCache
+from redisvl.utils.vectorize import OpenAITextVectorizer
 
 from src.apis import api
 from src.common.PluginManager import PluginManager
-from src.common.config import REDIS_CFG, CFG_SECRET_KEY, MINIPILOT_CACHE_TTL, MINIPILOT_CACHE_THRESHOLD,  MINIPILOT_DEBUG
+from src.common.config import REDIS_CFG, CFG_SECRET_KEY, MINIPILOT_CACHE_TTL, MINIPILOT_CACHE_THRESHOLD, \
+    MINIPILOT_DEBUG, OPENAI_API_KEY
 from src.common.logger import setup_logging
 from src.common.utils import generate_redis_connection_string, read_index_schema
 from src.prompt.PromptManager import PromptManager
@@ -43,12 +45,18 @@ def create_app():
     redis_url = generate_redis_connection_string(REDIS_CFG["host"], REDIS_CFG["port"], REDIS_CFG["password"])
 
     # Configuring the RedisVL semantic cache
+    oai = OpenAITextVectorizer(
+        model="text-embedding-ada-002",
+        api_config={"api_key": OPENAI_API_KEY},
+    )
+
     llmcache = SemanticCache(
         name="minipilot_cache_idx",
         prefix="minipilot:cache:item",
         ttl=MINIPILOT_CACHE_TTL,
         redis_url=redis_url,
-        distance_threshold=MINIPILOT_CACHE_THRESHOLD
+        distance_threshold=MINIPILOT_CACHE_THRESHOLD,
+        vectorizer=oai
     )
 
     app.llmcache = llmcache

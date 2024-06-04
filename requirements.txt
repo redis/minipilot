@@ -8,15 +8,12 @@ gunicorn==21.2.0
 langchain==0.1.4
 langchain_community==0.0.16
 langchain_core==0.1.17
-openai==1.10.0
+openai==1.31.0
 python-dotenv==1.0.1
 redis==5.0.1
-redisvl==0.0.7
+redisvl==0.2.0
 Requests==2.31.0
 scrapy==2.11.0
 spacy==3.7.4
 spacy-legacy==3.0.12
 tiktoken==0.5.2
-sentence-transformers==2.3.0
-tenacity==8.2.2
-validators==0.22.0
