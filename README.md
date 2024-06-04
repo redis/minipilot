@@ -104,11 +104,11 @@ Consult the Swagger REST API documentation at [http://127.0.0.1:5005/api](http:/
 The following endpoints deliver the chat, history, references and conversation reset services. 
 
 ```
-curl -X POST 'http://127.0.0.1:5005/api/chat?q=suggest%20a%20horror%movie' -H 'accept: application/json' -H 'session-id: my-session-id'
+curl -X POST 'http://127.0.0.1:5007/api/chat?q=suggest%20a%20horror%movie' -H 'accept: application/json' -H 'session-id: my-session-id'
 
-curl -X GET 'http://127.0.0.1:5005/api/history' -H 'accept: application/json' -H 'session-id: my-session-id'
+curl -X GET 'http://127.0.0.1:5007/api/history' -H 'accept: application/json' -H 'session-id: my-session-id'
 
-curl -X GET 'http://127.0.0.1:5005/api/references?q=recommend%20a%20movie' -H 'accept: application/json'
+curl -X GET 'http://127.0.0.1:5007/api/references?q=recommend%20a%20movie' -H 'accept: application/json'
 
-curl -X 'POST' 'http://127.0.0.1:5005/api/reset' -H 'accept: application/json' -H 'session-id: my-session-id'
+curl -X 'POST' 'http://127.0.0.1:5007/api/reset' -H 'accept: application/json' -H 'session-id: my-session-id'
 ```
