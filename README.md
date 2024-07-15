@@ -35,12 +35,12 @@ docker run -d --cap-add sys_resource --env DB_SERVICE="host.docker.internal" --e
 Explanation of the environment follows.
 
 ```commandline
-DB_SERVICE             The hostname or IP address of your Redis Stack instance or Redis Cloud database
+DB_SERVICE             The IP address of your Redis Stack instance or the hostname of a Redis Cloud database. If Redis Stack runs on your host, you can connect to the Docker host from the Docker container using "host.docker.internal"
 DB_PORT                The port of your Redis Stack instance or Redis Cloud database
 DB_PWD                 The password of your Redis Stack instance or Redis Cloud database
 DB_SSL                 If you would like to connect using SSL (mandatory for Redis Cloud databases)
 OPENAI_API_KEY         Your OpenAI token
-MINIPILOT_ENDPOINT     MiniPilot is a REST API service, but the internal chat interface uses the REST API too on the default exposed port 8000. You can just leave http://127.0.0.1:8000
+MINIPILOT_ENDPOINT     MiniPilot is a REST API service, but the internal chat interface uses the REST API, too, on the default exposed port 8000. You can just leave http://127.0.0.1:8000
 ```
 
 ## Local setup

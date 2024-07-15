@@ -129,6 +129,8 @@ class RedisRetrievalChain(Core):
         2. This new question is passed to the retriever and relevant documents are returned.
         3. The retrieved documents are passed to an LLM along with either the new question (default behavior) or the original question and chat history to generate a final response.
         """
+
+        # now you can rebuild this using https://js.langchain.com/v0.1/docs/use_cases/code_understanding/#chat
         chatbot = ConversationalRetrievalChain.from_llm(llm=streaming_llm,
                                                         retriever=self.__get_retriever_with_score(MINIPILOT_CONTEXT_LENGTH),
                                                         get_chat_history=get_chat_history,
