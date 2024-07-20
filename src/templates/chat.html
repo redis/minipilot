@@ -2,23 +2,23 @@
 
 {% block content %}
 
-<div class='container pb-2 px-5'>
-    <div class="columns mt-4 mb-4">
-        <div class="column"></div>
-        <div class="column is-two-thirds">
+<div style="margin-bottom:100px;">
+    <div class="columns">
+        <div class="column is-hidden-mobile"></div>
+        <div class="column is-two-thirds is-full-mobile">
             <span id="conversation">
             </span>
         </div>
-        <div class="column"></div>
+        <div class="column is-hidden-mobile"></div>
     </div>
 </div>
 <footer class="footer">
     <div class="columns">
-        <div class="column"></div>
-        <div class="column is-two-fifths">
+        <div class="column is-hidden-mobile"></div>
+        <div class="column is-two-fifths is-full-mobile">
             {% include 'botbar.html' %}
         </div>
-        <div class="column"></div>
+        <div class="column is-hidden-mobile"></div>
     </div>
 </footer>
 <script>

@@ -26,7 +26,13 @@ Then, decide where you want to run your Redis Stack instance.
 
 ## Docker setup
 
-Once you have your OpenAI token and a Redis Stack database available, pull the [MiniPilot container](https://hub.docker.com/r/ortolano/minipilot) and run it.
+Once you have your OpenAI token and a Redis Stack database available, you can create your Docker image using the provided `Dockerfile`.
+
+```commandline
+docker build --no-cache -t minipilot:0.1 .
+```
+
+Once the image has been added to your local repository, start the container.
 
 ```commandline
 docker run -d --cap-add sys_resource --env DB_SERVICE="host.docker.internal" --env DB_PORT=6379 --env DB_PWD="your-redis-password" --env DB_SSL="True" --env OPENAI_API_KEY="your-openai-key" --env MINIPILOT_ENDPOINT="http://127.0.0.1:8000" --name minipilot -p 5007:8000 ortolano/minipilot:0.1
@@ -48,7 +54,7 @@ MINIPILOT_ENDPOINT     MiniPilot is a REST API service, but the internal chat in
 If you prefer to run MiniPilot on your laptop, just clone the repository.
 
 ```commandline
-git clone https://github.com/mortensi/MiniPilot.git
+git clone https://github.com/redis/MiniPilot.git
 ```
 
 Install the requirements in a Python virtual environment

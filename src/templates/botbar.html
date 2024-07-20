@@ -1,21 +1,20 @@
-<form class="mt-4" method="post" action="">
-    <div class="field has-addons mb-1">
-
-        <div class="control is-expanded">
-            <input name="q" autocomplete="off" class="input search-bar" type="text" placeholder="Ask a question">
+<form class="search-form mt-4 p-2 pl-4" method="post" action="">
+    <div class="field has-addons">
+        <div class="control is-expanded is-flex is-vcentered">
+            <input name="q" autocomplete="off" class="search-bar" type="text" placeholder="Ask the MiniPilot a question...">
         </div>
-
         <div class="control has-icons-left">
-            <button id="chat" disabled type="submit" class="button search-button" autocomplete="off" style='background-image: url({{url_for("minipilot_bp.static",filename="static/images/magnifyingglass.svg")}}); background-size: 1.2em; background-repeat: no-repeat; background-position: 13px center; width: 45px;'>
+            <button id="chat" disabled type="submit" class="button search-button" autocomplete="off">
+                {% include "icons/search.html" %}
             </button>
         </div>
     </div>
-    <a id="reset" href="#">restart the conversation</a>
 </form>
+<a id="reset" href="#">restart the conversation</a>
 
 
 <script>
-    $(".input").on("change keyup blur input reset", function() {
+    $("input").on("change keyup blur input reset", function() {
         if (this.value.length){
             $("#chat").prop("disabled", false)
         }
@@ -32,7 +31,7 @@
             url: "{{ url_for('minipilot_bp.reset')}}",
             processData: true,
             success: function(data) {
-            $(".box").fadeOut("slow", function() {
+            $(".bubble-right, .bubble-left").fadeOut("slow", function() {
                 $("#conversation").empty();
             });
             }

@@ -4,9 +4,9 @@ function bubbles(endpoint, history, callback=undefined){
     var obj = jQuery.parseJSON(JSON.stringify(history));
     $.each(obj, function(key,value) {
         if (value.type == "HumanMessage")
-            $( "#conversation" ).append('<div class="box bubble-right">' + value.content + '</box>');
+            $( "#conversation" ).append('<div class="bubble bubble-right">' + value.content + '</div>');
         if (value.type == "AIMessage")
-            $( "#conversation" ).append('<div class="box bubble-left">' + converter.makeHtml(value.content) + '</box>');
+            $( "#conversation" ).append('<div class="bubble bubble-left">' + converter.makeHtml(value.content) + '</div>');
     });
     scroll();
 
@@ -14,8 +14,8 @@ function bubbles(endpoint, history, callback=undefined){
         e.preventDefault();
         q = $("input").val()
         if (callback != undefined){callback();}
-        $( "#conversation" ).append('<div class="box bubble-right">' + q + '</box>');
-        bubble = $("<div>", {'class': "box bubble-left"}).appendTo("#conversation");
+        $( "#conversation" ).append('<div class="bubble bubble-right">' + q + '</div>');
+        bubble = $("<div>", {'class': "bubble bubble-left"}).appendTo("#conversation");
         dot = $("<div>", {'class': "dot-flashing"});
         dot.appendTo(bubble);
         scroll();

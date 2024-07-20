@@ -3,11 +3,11 @@
 {% block content %}
 
 <div class='container pb-2 px-5' xmlns="http://www.w3.org/1999/html">
-    <h1 id="name" class="title is-4 pb-3">Data</h1>
-
     <div class="columns">
-        <div class="column">
-            <div class="box">
+        <div class="column"></div>
+        <div class="column is-two-thirds">
+            <h1 id="name" class="title is-4 pb-3">Data</h1>
+            <div class="bubble">
             <h2 class="title is-5">Files</h2>
             <form id="upload" class="mb-4" method="post" action="{{ url_for('data_bp.upload') }}" enctype="multipart/form-data">
                 <div class="field has-addons">
@@ -73,7 +73,7 @@
             </div>
             </div>
 
-            <div class="box">
+            <div class="bubble">
             <h2 class="title is-5">Semantic indexes</h2>
             {% if idx_overview|length > 0 %}
             <table class="table is-fullwidth is-hoverable">
@@ -118,6 +118,7 @@
             {% endif %}
             </div>
         </div>
+        <div class="column"></div>
     </div>
 
     {% include 'deleteidx.html' %}

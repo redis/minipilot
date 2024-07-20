@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <link rel="shortcut icon" href="{{ url_for('minipilot_bp.static',filename='static/images/favicon-32x32.png') }}" type="image/x-icon" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="minipilot admin page">
+        <meta name="description" content="Minipilot admin page">
         <title>Minipilot</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
         <link rel="stylesheet" href="{{ url_for('minipilot_bp.static',filename='static/css/style.css') }}" type="text/css" media="all">
@@ -22,8 +22,8 @@
             <section>
                 <nav class="p-1 mb-2 navbar is-transparent is-fixed-top" role="navigation" aria-label="main navigation">
                     <div class="navbar-brand mr-6">
-                        <a href="{{ url_for('minipilot_bp.landing') }}" class="navbar-item">
-                            <img alt="minipilot logo" height="40px" src="{{ url_for('minipilot_bp.static',filename='static/images/minipilot.png') }}">
+                        <a href="{{ url_for('minipilot_bp.landing') }}" class="navbar-item" style="width:102px;color:rgb(213 45 31);">
+                            {% include "icons/logo-script.html" %}
                         </a>
                         <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" style="margin:0 0 0 auto">
                             <span aria-hidden="true"></span>
@@ -55,7 +55,7 @@
                         </div>
                   </div>
                 </nav>
-                <div class="container pt-6 pb-6" style="padding-left:20px; padding-right:20px;">
+                <div class="container mt-6 mb-6" style="padding-left:20px; padding-right:20px;">
                    {% block content %}
                    {% endblock %}
                 </div>
