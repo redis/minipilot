@@ -61,6 +61,7 @@ body {
 
 *:focus {
     outline: none;
+    border: none;
 }
 
 .footer a{
@@ -84,3 +85,14 @@ html{
 }
 /* end of sticky footer */
 
+.pagination-link.is-current {
+    color:#000;
+    --tw-bg-opacity: 1;
+    background-color: rgb(220 255 30 / var(--tw-bg-opacity));
+    --tw-border-opacity: 1;
+    border-color: rgb(9 26 35 / var(--tw-border-opacity));
+}
+
+textarea {
+    resize: none;
+}

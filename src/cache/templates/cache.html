@@ -2,81 +2,80 @@
 
 {% block content %}
 
-<div class='pb-2 px-5' xmlns="http://www.w3.org/1999/html">
-    <h1 id="name" class="title is-4 pb-3">Cache</h1>
+<div class='container pb-2 px-5' xmlns="http://www.w3.org/1999/html">
+    <div class="columns">
+        <div class="column"></div>
+        <div class="column is-two-thirds">
+            <h1 id="name" class="title is-4 pb-3">Cache</h1>
+            <h2 class="title is-5">Search the cache</h2>
 
-    <form class="mt-4 mb-4" method="get" action="{{ url_for('cache_bp.cache')}}">
-        <div class="field has-addons">
+            <form class="mt-4 mb-4" method="get" action="{{ url_for('cache_bp.cache')}}">
+                <div class="field has-addons">
 
-            <div class="control is-expanded">
-                <input name="q" class="input" type="text" placeholder="Ask a question about Redis">
-            </div>
-            <div class="control">
-                <div class="select">
-                    <select name="s">
-                        <option {% if request.args.s == 'semantic' %} selected {% endif %} value="semantic">semantic</option>
-                        <option {% if request.args.s == 'fulltext' %} selected {% endif %} value="fulltext">full-text</option>
-                    </select>
+                    <div class="control is-expanded">
+                        <input name="q" class="input" type="text" placeholder="Search in the cache">
+                    </div>
+                    <div class="control">
+                        <div class="select">
+                            <select name="s">
+                                <option {% if request.args.s == 'semantic' %} selected {% endif %} value="semantic">semantic</option>
+                                <option {% if request.args.s == 'fulltext' %} selected {% endif %} value="fulltext">full-text</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control has-icons-left">
+                        <button id="chat" type="submit" class="button" autocomplete="off"
+                                style='background-image: url({{url_for("minipilot_bp.static",filename="static/images/magnifyingglass.svg")}}); background-size: 1.2em; background-repeat: no-repeat; background-position: 13px center; width: 45px;'>
+
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div class="control has-icons-left">
-                <button id="chat" type="submit" class="button" autocomplete="off"
-                        style='background-image: url({{url_for("minipilot_bp.static",filename="static/images/magnifyingglass.svg")}}); background-size: 1.2em; background-repeat: no-repeat; background-position: 13px center; width: 45px;'>
+            </form>
 
-                </button>
+            {% if cache|length > 0 %}
+
+            {% if question is not none and question|length >0 and cache|length != 0%}
+            <p class="mt-2 mb-4 has-text-grey">Results for <b>{{question}}</b></p>
+            {% endif %}
+            <div class="pt-4">
+            {% for entry in cache %}
+                <h3 class="title is-6 p-0 mb-2">{{entry['prompt']}}</h3>
+                <div class="bubble">
+                    <textarea style="width:100%; padding:0em; border:none; outline:none;" id="txt-{{entry['id']}}">{{entry['response']}}</textarea>
+                    <div style="padding:0em; display:none;" id="html-{{entry['id']}}"></div>
+                    <div class="mt-2">
+                        <input type="checkbox" class="markdownCheckbox">
+                        <span class="mr-2">
+                            HTML view
+                        </span>
+                        <a class="mr-2 save_idx_anchor"
+                           href="{{ url_for('cache_bp.cache_save',doc=entry['id'],  _external=True) }}">
+                            Save
+                        </a>
+                        <a class="mr-2 delete_idx_anchor" href="{{ url_for('cache_bp.cache_delete',doc=entry['id']) }}">
+                            Delete
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
             </div>
+
+            {% if pagination is not none %}
+            <div class="mt-4 mb-6">
+                {{ pagination.links }}
+            </div>
+            {% endif %}
+            {% endif %}
+
+            {% if question is not none and cache|length == 0%}
+            <p class="mt-3">The question <b>{{question}}</b> produced no results</p>
+            {% endif %}
+
         </div>
-    </form>
-
-    {% if cache|length > 0 %}
-
-    {% if question is not none and question|length >0 and cache|length != 0%}
-    <p class="mt-3 mb-3">Results for <b>{{question}}</b></p>
-    {% endif %}
-
-    <table class="table is-fullwidth is-hoverable">
-        <thead>
-        <tr>
-            <th>Prompt</th>
-            <th>Answer</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for entry in cache %}
-        <tr>
-            <td>
-                {{entry['prompt']}}
-            </td>
-            <td style="width:70%;">
-                <textarea style="width:100%; padding:1em;" id="txt-{{entry['id']}}">{{entry['response']}}</textarea>
-                <div style="padding:1em; display:none;" id="html-{{entry['id']}}"></div>
-                <input type="checkbox" class="markdownCheckbox">
-                <span class="mr-2">
-                    HTML view
-                </span>
-                <a class="mr-2 save_idx_anchor"
-                   href="{{ url_for('cache_bp.cache_save',doc=entry['id'],  _external=True) }}">
-                    Save
-                </a>
-                <a class="mr-2 delete_idx_anchor" href="{{ url_for('cache_bp.cache_delete',doc=entry['id']) }}">
-                    Delete
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    {% if pagination is not none %}
-    <div class="mt-4 mb-6">
-        {{ pagination.links }}
+        <div class="column"></div>
     </div>
-    {% endif %}
-    {% endif %}
+</div>
 
-    {% if question is not none and cache|length == 0%}
-    <p class="mt-3">The question <b>{{question}}</b> produced no results</p>
-    {% endif %}
 
     <script>
         function convertMarkdownToHTML(textareaId, divId) {

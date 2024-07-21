@@ -3,41 +3,30 @@
 {% block content %}
 
 <div class='container pb-2 px-5' xmlns="http://www.w3.org/1999/html">
-    <h1 id="name" class="title is-4 pb-3">Prompts</h1>
-    <table class="table is-fullwidth is-hoverable">
-        <thead>
-        <tr>
-            <th>Prompt</th>
-            <th>Content</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>
-                {{system['title']}}
-            </td>
-            <td style="width:70%;">
-                <textarea style="width:100%; padding:1em;" id="system">{{system['content']}}</textarea>
+    <div class="columns">
+        <div class="column"></div>
+        <div class="column is-two-thirds">
+            <h1 id="name" class="title is-4 pb-3">Prompts</h1>
+            <h2 class="title is-5">{{system['title']}}</h2>
+            <div class="bubble p-4">
+                <textarea style="width:100%; padding:0em; border:none; outline:none;" id="system">{{system['content']}}</textarea>
                 <a class="mr-2 save_idx_anchor"
                    href="{{ url_for('prompt_bp.save',prompt=system['category'],  _external=True) }}">
                     Save
                 </a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                {{user['title']}}
-            </td>
-            <td style="width:70%;">
-                <textarea style="width:100%; padding:1em;" id="user">{{user['content']}}</textarea>
+            </div>
+            <h2 class="title is-5">{{user['title']}}</h2>
+            <div class="bubble p-4">
+                <textarea style="width:100%; padding:0em; border:none; outline:none;" id="user">{{user['content']}}</textarea>
                 <a class="mr-2 save_idx_anchor"
                    href="{{ url_for('prompt_bp.save',prompt=user['category'],  _external=True) }}">
                     Save
                 </a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+            </div>
+        </div>
+        <div class="column"></div>
+    </div>
+</div>
 
     <script>
         $('textarea').each(function() {

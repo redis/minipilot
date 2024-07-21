@@ -19,6 +19,6 @@ def prompt():
 @prompt_bp.route('/prompt/save', methods=['POST'])
 def save():
     current_app.prompt_manager.update_prompt(request.get_json())
-    return jsonify(message="Cache item updated"), 200
+    return jsonify(message="Prompt updated"), 200
 
 

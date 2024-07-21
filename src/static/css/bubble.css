@@ -7,19 +7,21 @@
     border-radius: 0.375rem;
     margin-bottom: 2em;
     border: 1px solid;
-    --tw-border-opacity: 1;
-    border-color: rgb(22 51 65 / var(--tw-border-opacity));
+    border-color: #888;
     clear: both;
+    font-size: 1.125rem;
 }
 
-ul, ol{
-    padding-left: 5%;
+.bubble ul, ol{
+    padding: 10px;
+    list-style-type: disc;
+    list-style-position: inside;
 }
 
 .bubble-left {
     float: left;
     max-width:90%;
-    background-color: #FAFAFE;
+    background-color: #FAFAFA;
     color:#000;
     border-top-left-radius: 0px;
 }
