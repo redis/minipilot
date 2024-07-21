@@ -13,7 +13,7 @@
                 <div class="field has-addons">
 
                     <div class="control is-expanded">
-                        <input name="q" class="input" type="text" placeholder="Search in the cache">
+                        <input name="q" class="input" type="text" placeholder="Search in the cache" {% if question is not none %} value="{{question}}" {% endif %}>
                     </div>
                     <div class="control">
                         <div class="select">
@@ -26,7 +26,6 @@
                     <div class="control has-icons-left">
                         <button id="chat" type="submit" class="button" autocomplete="off"
                                 style='background-image: url({{url_for("minipilot_bp.static",filename="static/images/magnifyingglass.svg")}}); background-size: 1.2em; background-repeat: no-repeat; background-position: 13px center; width: 45px;'>
-
                         </button>
                     </div>
                 </div>
@@ -88,8 +87,8 @@
 
         $('.markdownCheckbox').change(function() {
             event.preventDefault();
-            var textareaId = $(this).prev('div').prev('textarea').attr('id');
-            var divId = $(this).prev('div').attr('id');
+            var textareaId = $(this).closest('.bubble').find('textarea').attr('id');
+            var divId = $(this).closest('.bubble').find('div[id^="html-"]').attr('id');
             if ($(this).prop('checked')) {
                 convertMarkdownToHTML(textareaId, divId);
             } else {
@@ -125,38 +124,10 @@
                 data: JSON.stringify({"doc": docId, "response": $('#txt-' + docId).val()}),
                 contentType: "application/json",
                 success: function(data) {
-                    $.notify(data["message"], "success");
+                    $.notify(data["message"], {style: 'minipilot'}, "success");
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    $.notify(JSON.parse(jqXHR.responseText)['message'], 'error');
-                }
-            })
-        });
-
-        $('.persist_idx_anchor').click(function(event) {
-            event.preventDefault();
-            var href = $(this).attr("href");
-            var url = new URL(href);
-            var docId = url.searchParams.get('doc');
-            var aId = $(this).attr('id');
-
-            $.ajax({
-                type: "POST",
-                url: "{{ url_for('cache_bp.cache_persist')}}",
-                dataType: "json",
-                data: JSON.stringify({"doc": docId}),
-                contentType: "application/json",
-                success: function(data) {
-                    $.notify(data["message"], "success");
-                    $('#' + aId).replaceWith(function() {
-                            return $('<span>', {
-                                text: "persisted",
-                                class: "mr-2"
-                            });
-                        });
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    $.notify(JSON.parse(jqXHR.responseText)['message'], 'error');
+                    $.notify(JSON.parse(jqXHR.responseText)['message'], {style: 'minipilot'}, 'error');
                 }
             })
         });

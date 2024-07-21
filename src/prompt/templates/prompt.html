@@ -47,10 +47,10 @@
                 data: JSON.stringify({"prompt": prompt, "content": $('#' + prompt).val()}),
                 contentType: "application/json",
                 success: function(data) {
-                    $.notify(data["message"], "success");
+                    $.notify(data["message"], {style: 'minipilot'}, "success");
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    $.notify(JSON.parse(jqXHR.responseText)['message'], 'error');
+                    $.notify(JSON.parse(jqXHR.responseText)['message'], {style: 'minipilot'}, 'error');
                 }
             })
         });

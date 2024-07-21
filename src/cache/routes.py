@@ -76,15 +76,3 @@ def cache_save():
     response = data["response"]
     get_db().hset(f"minipilot:cache:item:{doc_id}", mapping={"response": response})
     return jsonify(message="Cache item updated"), 200
-
-
-@cache_bp.route('/cache/persist', methods=['POST'])
-def cache_persist():
-    data = request.get_json()
-    doc_id = data["doc"]
-
-    p = get_db().pipeline(transaction=True)
-    p.persist(f"minipilot:cache:item:{doc_id}")
-    p.sadd("minipilot:cache:persisted", doc_id)
-    p.execute()
-    return jsonify(message="Cache item persisted"), 200

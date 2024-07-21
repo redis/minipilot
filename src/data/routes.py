@@ -151,19 +151,6 @@ def idx_create():
     return redirect(url_for("data_bp.data"))
 
 
-@data_bp.route('/data/preview', methods=['GET'])
-def idx_preview():
-    filename = get_db().hget(f"minipilot:data:{request.args.get('id')}", "filename")
-    path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-    with open(path, encoding='utf-8') as csvf:
-        csvReader = csv.DictReader(csvf)
-        dict_from_csv = dict(list(csvReader)[0])
-        list_of_column_names = list(dict_from_csv.keys())
-
-    return render_template('previewidx.html',
-                           columns=list_of_column_names)
-
-
 @data_bp.route('/data/info', methods=['GET'])
 def info():
     filename = get_db().hget(f"minipilot:data:{request.args.get('id')}", "filename")
