@@ -17,7 +17,7 @@ from langchain_core.messages import BaseMessage
 from src.core.RedisRetriever import RedisRetriever
 from src.core.RedisRetrieverWithScore import RedisRetrieverWithScore
 from src.core.StreamingStdOutCallbackHandlerYield import StreamingStdOutCallbackHandlerYield, STOP_ITEM
-from src.common.config import REDIS_CFG, MINIPILOT_HISTORY_TIMEOUT, MINIPILOT_MODEL, MINIPILOT_LLM_TIMEOUT, \
+from src.common.config import REDIS_CFG, MINIPILOT_HISTORY_TIMEOUT, OPENAI_MODEL, MINIPILOT_LLM_TIMEOUT, \
     MINIPILOT_HISTORY_LENGTH, MINIPILOT_CONTEXT_LENGTH, MINIPILOT_CACHE_ENABLED, MINIPILOT_DEBUG
 from src.common.utils import generate_redis_connection_string
 from src.core.Core import Core
@@ -28,7 +28,7 @@ class RedisRetrievalChain(Core):
         super().__init__()
         self.session_id = session_id
         self.queue = queue.Queue()
-        self.model = MINIPILOT_MODEL
+        self.model = OPENAI_MODEL
         self.llmcache = current_app.llmcache
         self.prompt_manager = current_app.prompt_manager
         self.index_schema = current_app.index_schema

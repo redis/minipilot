@@ -11,14 +11,9 @@ class RedisRetriever(BaseRetriever):
         arbitrary_types_allowed = True
 
     def combine_metadata(self, doc) -> str:
-        metadata = doc.metadata
+        metadata = doc[0].metadata
         return (
-                "Movie Title: " + metadata["names"] + ". " +
-                "Movie Genre: " + metadata["genre"] + ". " +
-                "Movie Score: " + metadata["score"] + "." +
-                "Movie Country: " + metadata["country"] + "." +
-                "Movie Revenue: " + metadata["revenue"] + "." +
-                "Movie Release date: " + metadata["date_x"] + "."
+            '\n'.join([f"{key}: {value}" for key, value in metadata.items()])
         )
 
     def get_relevant_documents(self, query) -> []:

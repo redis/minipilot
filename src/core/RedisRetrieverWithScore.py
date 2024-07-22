@@ -1,7 +1,7 @@
 from langchain.schema import BaseRetriever
 from langchain.schema import Document
 from langchain.schema.vectorstore import VectorStore
-from src.common.config import MINIPILOT_RELEVANCE_SCORE
+from src.common.config import MINIPILOT_CONTEXT_RELEVANCE_SCORE
 
 
 class RedisRetrieverWithScore(BaseRetriever):
@@ -19,7 +19,7 @@ class RedisRetrieverWithScore(BaseRetriever):
 
     def get_relevant_documents(self, query) -> []:
         docs = []
-        for doc in self.vectorstore.similarity_search_with_relevance_scores(query, k=self.context, score_threshold=MINIPILOT_RELEVANCE_SCORE):
+        for doc in self.vectorstore.similarity_search_with_relevance_scores(query, k=self.context, score_threshold=MINIPILOT_CONTEXT_RELEVANCE_SCORE):
             docs.append(Document(
                 page_content=doc[0].page_content + self.combine_metadata(doc),
                 metadata=doc[0].metadata
