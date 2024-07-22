@@ -12,3 +12,4 @@ python-dotenv==1.0.1
 redis==5.0.1
 redisvl==0.2.0
 Requests==2.31.0
+tiktoken==0.5.2
