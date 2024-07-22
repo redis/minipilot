@@ -44,7 +44,7 @@ def threaded_task(filename):
 
     # Validate there is an OPENAI_API_KEY passed in the environment
     try:
-        # he default model is "text-embedding-ada-002".
+        # the default model is "text-embedding-ada-002".
         # max input is 8191
         embedding_model = OpenAIEmbeddings(model="text-embedding-ada-002")
     except Exception as e:

@@ -14,3 +14,7 @@ The explanation of the steps in the pipeline follows.
 6. The answer is streamed back to the user.
 7. The question and answer pair is added to the cache if relevant (a basic criterion is represented by the context. If there was at least a result while fetching the context for RAG, then the question is pertinent, and the answer can be saved).
 8. The interaction is added to the conversation history.
+
+Regarding the interactions with OpenAI, MiniPilot uses the [chat completion api](https://platform.openai.com/docs/guides/chat-completions) via the LangChain [ChatOpenAI](https://python.langchain.com/v0.2/docs/integrations/chat/openai/) class as well as the `text-embedding-ada-002` embedding model for the retrievers and the semantic cache.
+
+![architecture](../src/static/images/minipilot-ai-pipeline.png)
