@@ -1,0 +1,34 @@
+version: '1.0'
+
+services:
+  redis:
+    container_name: redis-minipilot
+    image: redis/redis-stack:latest
+    ports:
+      - "6399:6379"
+      - "8099:8001"
+    networks:
+      - minipilot-network
+    volumes:
+      - ./data/dump.rdb:/data/dump.rdb
+
+  minipilot:
+    build: .
+    container_name: minipilot
+    image: minipilot:latest
+    depends_on:
+      - redis
+    environment:
+      - DB_SERVICE=redis
+      - DB_PORT=6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MINIPILOT_ENDPOINT=http://127.0.0.1:8000
+    ports:
+      - "5007:8000"
+    networks:
+      - minipilot-network
+
+networks:
+  minipilot-network:
+    name: minipilot_network
+    driver: bridge

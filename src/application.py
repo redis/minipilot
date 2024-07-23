@@ -1,5 +1,6 @@
 import logging
 import os
+import time
 from http.client import HTTPException
 
 import redis
@@ -20,7 +21,22 @@ from src.common.utils import generate_redis_connection_string, read_index_schema
 from src.prompt.PromptManager import PromptManager
 
 
+def redis_waiter():
+    # database may be down or reloading
+    while True:
+        try:
+            conn = redis.StrictRedis(host=REDIS_CFG["host"], port=REDIS_CFG["port"], password=REDIS_CFG["password"])
+            conn.ping()
+            break
+        except Exception as e:
+            print(e)
+            time.sleep(5)
+
+
 def create_app():
+    # make sure Redis is up and running, and the dataset is loaded in memory
+    redis_waiter()
+
     app = Flask(__name__, template_folder="templates")
     app.secret_key = CFG_SECRET_KEY
     app.config["SESSION_TYPE"] = "redis"
