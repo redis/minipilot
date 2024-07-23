@@ -52,9 +52,12 @@ class ChatHistoryReset(Resource):
     def post(self):
         """Reset user conversation history"""
         session_id = str(request.headers.get("session-id"))
-        engine = RedisRetrievalChain(session_id)
-        engine.reset_history()
-        return {"response": "Conversation restarted"}, 200
+        try:
+            engine = RedisRetrievalChain(session_id)
+            engine.reset_history()
+            return {"response": "Conversation restarted"}, 200
+        except:
+            return {"response": "Cannot reset the conversation, do you have a semantic index?"}, 500
 
 
 @api.route('/chat')
@@ -71,9 +74,12 @@ class Chat(Resource):
         args = self.service_query_parser.parse_args(req=request)
         session_id = str(request.headers.get("session-id"))
 
-        engine = RedisRetrievalChain(session_id)
-        engine.ask(args['q'])
-        return Response(engine.streamer(), content_type="text/event-stream", headers={'X-Accel-Buffering': 'no'})
+        try:
+            engine = RedisRetrievalChain(session_id)
+            engine.ask(args['q'])
+            return Response(engine.streamer(), content_type="text/event-stream", headers={'X-Accel-Buffering': 'no'})
+        except ValueError as e:
+            return Response(e.__str__(), content_type="text/event-stream", headers={'X-Accel-Buffering': 'no'})
 
 
 @api.route('/references')

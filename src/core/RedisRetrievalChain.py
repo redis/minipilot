@@ -34,12 +34,15 @@ class RedisRetrievalChain(Core):
         self.index_schema = current_app.index_schema
         self.embedding_model = OpenAIEmbeddings()
 
-        self.rds = Redis.from_existing_index(
-            self.embedding_model,
-            index_name="minipilot_rag_alias",
-            schema=self.index_schema,
-            redis_url=generate_redis_connection_string(REDIS_CFG["host"], REDIS_CFG["port"], REDIS_CFG["password"])
-        )
+        try:
+            self.rds = Redis.from_existing_index(
+                self.embedding_model,
+                index_name="minipilot_rag_alias",
+                schema=self.index_schema,
+                redis_url=generate_redis_connection_string(REDIS_CFG["host"], REDIS_CFG["port"], REDIS_CFG["password"])
+            )
+        except Exception as e:
+            raise ValueError("Cannot answer. Remember to create a semantic index and make it current")
 
 
     def __get_retriever(self, results):

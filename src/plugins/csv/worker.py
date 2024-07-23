@@ -1,5 +1,4 @@
 import csv
-import os
 from datetime import datetime
 import logging
 
@@ -12,13 +11,15 @@ from src.common.config import REDIS_CFG
 from src.common.utils import generate_redis_connection_string, get_filename_without_extension
 
 
-def threaded_task(filename):
+def csv_loader_task(filename):
     conn = redis.StrictRedis(host=REDIS_CFG["host"], port=REDIS_CFG["port"], password=REDIS_CFG["password"])
 
     # Create a new index, named by CSV file and datetime
     index_name = f"minipilot_rag_{get_filename_without_extension(filename)}_{datetime.now().strftime('%Y%m%d_%H%M%S')}_idx"
-
     index_schema = None
+    vector_schema = {
+        "algorithm": "HNSW"
+    }
 
     """
     # Use index_schema if you would like to index other fields. Not used by semantic search but for hybrid search if required
@@ -32,27 +33,24 @@ def threaded_task(filename):
     }
     """
 
-    vector_schema = {
-        "algorithm": "HNSW"
-    }
-
-    # If there is no index for RAG, this is the first index; then, manually point an alias to it
-    try:
-        conn.ft('convai_rag_alias').info()
-    except redis.exceptions.ResponseError as e:
-        logging.warning(f"No alias exists for semantic search. Create the alias when indexing is done")
-
     # Validate there is an OPENAI_API_KEY passed in the environment
     try:
-        # the default model is "text-embedding-ada-002".
-        # max input is 8191
         embedding_model = OpenAIEmbeddings(model="text-embedding-ada-002")
     except Exception as e:
         logging.error(e)
 
+    # If there is no index for RAG, this is the first index; then, the user should make it current from the UI
+    try:
+        conn.ft('convai_rag_alias').info()
+    except redis.exceptions.ResponseError as e:
+        logging.warning(f"No alias exists for semantic search. Associate the alias to the desired index")
+
     # https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them
+    # the default model is "text-embedding-ada-002".
+    # max input is 8191 tokens
     # 1 token ~= 4 chars in English
-    # 8191 x 4 = 32764
+    # 8191 x 4 = 32764 maximum characters that can be represented by a vector embedding
+    # choosing 10000 as chunk size seems ok
     doc_splitter = RecursiveCharacterTextSplitter(  chunk_size=10000,
                                                     chunk_overlap=50,
                                                     length_function=len,
@@ -82,6 +80,7 @@ def threaded_task(filename):
             """
 
             if len(splits) > 0:
+                # Ingest the document
                 Redis.from_texts(texts=splits,
                                  metadatas=metadatas,
                                  embedding=embedding_model,
@@ -89,3 +88,4 @@ def threaded_task(filename):
                                  index_schema=index_schema,
                                  vector_schema=vector_schema,
                                  redis_url=generate_redis_connection_string(REDIS_CFG["host"], REDIS_CFG["port"], REDIS_CFG["password"]))
+

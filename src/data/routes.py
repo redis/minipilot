@@ -10,7 +10,7 @@ from redis.commands.search.query import Query
 from werkzeug.utils import secure_filename
 
 from src.common.utils import get_db
-from src.plugins.csv.worker import threaded_task
+from src.plugins.csv.worker import csv_loader_task
 
 data_bp = Blueprint('data_bp', __name__,
                       template_folder='./templates',
@@ -144,9 +144,12 @@ def idx_create():
     path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
 
     # depending on the file type invoke a different worker to index a different file type
-    thread = Thread(target=threaded_task, args=(path,))
+    thread = Thread(target=csv_loader_task, args=(path,))
     thread.daemon = True
     thread.start()
+
+    # wait a second and refresh the page so the task appears immediately
+    time.sleep(1)
 
     return redirect(url_for("data_bp.data"))
 

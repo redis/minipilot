@@ -18,6 +18,14 @@
     list-style-position: inside;
 }
 
+.bubble-initial {
+    float: left;
+    max-width:90%;
+    background-color: #FAFAFA;
+    color:#000;
+    border-top-left-radius: 0px;
+}
+
 .bubble-left {
     float: left;
     max-width:90%;
