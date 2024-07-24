@@ -6,10 +6,10 @@ class Core(RedisConnection):
     def __init__(self):
         super().__init__()
 
-    def log(self, session_id, question, answer, ttft, etel):
+    def log(self, session_id, question, answer, ttft, etfl):
         data = {'session': session_id,
                 'question': question,
                 'answer': answer,
                 'ttft': ttft,
-                'etel': etel}
+                'etfl': etfl}
         self.conn.xadd("minipilot:conversation", data, maxlen=MINIPILOT_CONVERSATION_LENGTH)

@@ -12,6 +12,8 @@ function bubbles(endpoint, history, callback=undefined){
 
     $("#chat").click(function(e){
         e.preventDefault();
+        ttft = 0;
+        now = Date.now();
         q = $("input").val()
         if (callback != undefined){callback();}
         $( "#conversation" ).append('<div class="bubble bubble-right">' + q + '</div>');
@@ -30,6 +32,7 @@ function bubbles(endpoint, history, callback=undefined){
                 // Getting on progress streaming response
                 onprogress: function(e)
                 {
+                    if (!ttft) {ttft = Date.now() - now;}
                     var progressResponse;
                     var response = e.currentTarget.response;
                     if(lastResponseLength === false)
@@ -48,6 +51,10 @@ function bubbles(endpoint, history, callback=undefined){
             },
             success: function(data) {
                 $(document).ready(function(){$('a').attr('target', '_blank');});
+                etfl = Date.now() - now;
+                bubble.attr('data-etfl', etfl);
+                bubble.attr('data-ttft', ttft);
+                bubble.attr("title", `Time to first token is ${ttft}ms. Elapsed time first to last token is ${etfl}ms`);
             }
         });
         return false;
