@@ -9,6 +9,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, curren
 from redis.commands.search.query import Query
 from werkzeug.utils import secure_filename
 
+from src.common.ConfigProvider import ConfigProvider
 from src.common.utils import get_db
 from src.plugins.csv.worker import csv_loader_task
 
@@ -67,9 +68,13 @@ def data():
     except redis.exceptions.ResponseError as e:
         print(e)
 
+    # Get configuration
+    cfg = ConfigProvider().get_config()
+
     return render_template('data.html',
                            idx_overview=idx_overview,
-                           data=data)
+                           data=data,
+                           configuration=cfg)
 
 
 @data_bp.route('/data/delete', methods=['GET','POST'])
@@ -165,3 +170,17 @@ def info():
 
     return jsonify(message="File information", info=list_of_column_names), 200
 
+
+@data_bp.route('/data/config/save', methods=['POST'])
+def config_save():
+    keys = request.form.keys()
+    cfg = ConfigProvider()
+
+    for key in keys:
+        cfg.set_key_value(key, request.form.get(key).lower() in ('true', '1', 't', 'on'))
+
+    print(cfg.is_memory())
+    print(cfg.is_semantic_cache())
+    print(cfg.is_rate_limiter())
+
+    return jsonify(message="Configuration saved"), 200

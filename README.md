@@ -16,14 +16,14 @@ The system uses:
 
 ## Quickstart
 
+Follow these instructions to build and start MiniPilot and a Redis Stack database as containers on your laptop. For more installation methods, refer to the docs.
+
 1. `git clone https://github.com/redis/MiniPilot.git`
 2. `export OPENAI_API_KEY="your-openai-key"`
 2. `cd MiniPilot`
 3. `docker-compose build --no-cache && docker-compose up`
 4. Point your browser to [http://127.0.0.1:5007/](http://127.0.0.1:5007) and start chatting
 5. Browse your data with Redis Insight at [http://127.0.0.1:8099](http://127.0.0.1:8099)
-
-For more installation methods, refer to the docs.
 
 ## Documentation
 - [Installation Guide](docs/installation.md)

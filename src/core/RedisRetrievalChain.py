@@ -14,6 +14,7 @@ import threading
 
 from langchain_core.messages import BaseMessage
 
+from src.common.ConfigProvider import ConfigProvider
 from src.core.RedisRetriever import RedisRetriever
 from src.core.RedisRetrieverWithScore import RedisRetrieverWithScore
 from src.core.StreamingStdOutCallbackHandlerYield import StreamingStdOutCallbackHandlerYield, STOP_ITEM
@@ -33,6 +34,7 @@ class RedisRetrievalChain(Core):
         self.prompt_manager = current_app.prompt_manager
         self.index_schema = current_app.index_schema
         self.embedding_model = OpenAIEmbeddings()
+        self.cfg = ConfigProvider()
 
         try:
             self.rds = Redis.from_existing_index(
@@ -84,7 +86,7 @@ class RedisRetrievalChain(Core):
                                                 ttl=MINIPILOT_HISTORY_TIMEOUT)
 
         # Managing the semantic cache
-        if MINIPILOT_CACHE_ENABLED:
+        if self.cfg.is_semantic_cache():
             cached = self.llmcache.check(prompt=q, return_fields=["response", "metadata"])
             if len(cached) > 0:
                 callback_fn.q.put(cached[0]['response'])
@@ -147,12 +149,15 @@ class RedisRetrievalChain(Core):
         result = None
         try:
             result = chatbot.invoke({"question": q, "chat_history": redis_history})
-            references = {}
-            for doc in result['source_documents']:
-                references[doc.metadata['id'].split('idx:')[-1]] = doc.metadata
 
-            redis_history.add_user_message(result["question"])
-            redis_history.add_message(BaseMessage(content=result["answer"], type="ai", additional_kwargs=references))
+            # decide if conversation history should be saved
+            if self.cfg.is_memory():
+                references = {}
+                for doc in result['source_documents']:
+                    references[doc.metadata['id'].split('idx:')[-1]] = doc.metadata
+
+                redis_history.add_user_message(result["question"])
+                redis_history.add_message(BaseMessage(content=result["answer"], type="ai", additional_kwargs=references))
 
             """
             Update the cache only if caching is enabled AND there was context retrieved for RAG
@@ -167,7 +172,9 @@ class RedisRetrievalChain(Core):
             5. however, "are you completely sure?" will likely not produce relevant results for RAG (filtered out by a threshold)
                and then it makes no sense to store the pair question/answer
             """
-            if len(references) and MINIPILOT_CACHE_ENABLED:
+
+            # decide if the interaction should be cached
+            if len(references) and self.cfg.is_semantic_cache():
                 self.llmcache.store(prompt=result["generated_question"],
                                     response=result["answer"],
                                     metadata=references)

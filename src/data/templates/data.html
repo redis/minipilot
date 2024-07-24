@@ -26,7 +26,7 @@
                         </div>
                     </div>
                     <div class="control">
-                        <button type="submit" class="button is-dark">Submit</button>
+                        <button type="submit" class="button redis-yellow">Submit</button>
                     </div>
                 </div>
             </form>
@@ -74,48 +74,86 @@
             </div>
 
             <div class="bubble">
-            <h2 class="title is-5">Semantic indexes</h2>
-            {% if idx_overview|length > 0 %}
-            <table class="table is-fullwidth is-hoverable">
-                <thead>
-                <tr>
-                    <th>Index</th>
-                    <th>Current</th>
-                    <th>Docs</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for idx in idx_overview %}
-                <tr>
-                    <td style="word-wrap: break-word; word-break: break-all; white-space: normal; width:70%">
-                        {{idx['name']}}
-                    </td>
-                    <td>
-                        {% if idx['is_current']==true %}
-                        &#10004;
-                        {% endif %}
-                    </td>
-                    <td>
-                        {{idx['docs']}}
-                    </td>
-                    <td>
-                        {% if idx['is_current']==false %}
-                        <a class="mr-5" href="{{ url_for('data_bp.idx_current',name=idx['name']) }}">
-                            Make current
-                        </a>
-                        <a class="delete_idx_anchor" href="{{ url_for('data_bp.idx_delete',name=idx['name']) }}">
-                            Delete
-                        </a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <p>You have no semantic index, upload a CSV data source and create the index</p>
-            {% endif %}
+                <h2 class="title is-5">Semantic indexes</h2>
+                {% if idx_overview|length > 0 %}
+                <table class="table is-fullwidth is-hoverable">
+                    <thead>
+                    <tr>
+                        <th>Index</th>
+                        <th>Current</th>
+                        <th>Docs</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for idx in idx_overview %}
+                    <tr>
+                        <td style="word-wrap: break-word; word-break: break-all; white-space: normal; width:70%">
+                            {{idx['name']}}
+                        </td>
+                        <td>
+                            {% if idx['is_current']==true %}
+                            &#10004;
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{idx['docs']}}
+                        </td>
+                        <td>
+                            {% if idx['is_current']==false %}
+                            <a class="mr-5" href="{{ url_for('data_bp.idx_current',name=idx['name']) }}">
+                                Make current
+                            </a>
+                            <a class="delete_idx_anchor" href="{{ url_for('data_bp.idx_delete',name=idx['name']) }}">
+                                Delete
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>You have no semantic index, upload a CSV data source and create the index</p>
+                {% endif %}
+            </div>
+            <div class="bubble">
+                <h2 class="title is-5">Configuration</h2>
+                <form class="mt-4" method="post" action="{{ url_for('data_bp.config_save') }}">
+                    <div class="field">
+                        <div class="is-flex is-align-items-center is-justify-content-space-between">
+                            <label for="primary-checkbox" class="checkbox-container">
+                                Override environment variables
+                                <input class="toggle" name="minipilot_distributed_configuration_enabled" id="primary-checkbox" type="checkbox" {% if configuration.minipilot_distributed_configuration_enabled %} checked{% endif %}>
+                            </label>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="field">
+                        <div class="is-flex is-align-items-center is-justify-content-space-between">
+                            <label for="rate-checkbox" class="checkbox-container">
+                                Rate limiter
+                                <input name="minipilot_rate_limiter_enabled" id="rate-checkbox" type="checkbox" {% if configuration.minipilot_rate_limiter_enabled %} checked{% endif %} {% if not configuration.minipilot_distributed_configuration_enabled %} disabled{% endif %}>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="is-flex is-align-items-center is-justify-content-space-between">
+                            <label for="memory-checkbox" class="checkbox-container">
+                                Conversation memory
+                                <input name="minipilot_history_enabled" id="memory-checkbox" type="checkbox" {% if configuration.minipilot_history_enabled %} checked{% endif %} {% if not configuration.minipilot_distributed_configuration_enabled %} disabled{% endif %}>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="is-flex is-align-items-center is-justify-content-space-between">
+                            <label for="cache-checkbox" class="checkbox-container">
+                                Semantic cache
+                                <input name="minipilot_cache_enabled" id="cache-checkbox" type="checkbox" {% if configuration.minipilot_cache_enabled %} checked{% endif %} {% if not configuration.minipilot_distributed_configuration_enabled %} disabled{% endif %}>
+                            </label>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="column"></div>
@@ -129,6 +167,34 @@
                 fileName.textContent = fileInput.files[0].name;
             }
         };
+
+        $(document).ready(function() {
+            $('.toggle').change(function() {
+                var isChecked = $(this).is(':checked');
+                $('input[type="checkbox"]').not('.toggle').prop('disabled', !$(this).is(':checked'));
+            });
+
+            $('input[type="checkbox"]').change(function() {
+                var checkbox = $(this);
+                var isChecked = checkbox.is(':checked');
+                var name = checkbox.attr('name');
+
+                var data = {};
+                data[name] = isChecked;
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/data/config/save',
+                    data: data,
+                    success: function(data) {
+                        $.notify(data["message"], {style: 'minipilot'}, "success");
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $.notify(JSON.parse(jqXHR.responseText)['message'], {style: 'minipilot'}, 'error');
+                    }
+                });
+            });
+        });
     </script>
 
     {% endblock %}

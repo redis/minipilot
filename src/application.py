@@ -15,7 +15,7 @@ from redisvl.utils.vectorize import OpenAITextVectorizer
 from src.apis import api
 from src.common.PluginManager import PluginManager
 from src.common.config import REDIS_CFG, CFG_SECRET_KEY, MINIPILOT_CACHE_TTL, MINIPILOT_CACHE_THRESHOLD, \
-    MINIPILOT_DEBUG, OPENAI_API_KEY
+    MINIPILOT_DEBUG, OPENAI_API_KEY, MINIPILOT_RATE_LIMITER_ENABLED, MINIPILOT_CACHE_ENABLED, MINIPILOT_HISTORY_ENABLED
 from src.common.logger import setup_logging
 from src.common.utils import generate_redis_connection_string, read_index_schema
 from src.prompt.PromptManager import PromptManager
@@ -136,6 +136,16 @@ def create_app():
                   TagField("filename", as_name="filename"),
                   NumericField("uploaded", as_name="uploaded"))
         conn.ft('minipilot_data_idx').create_index(schema, definition=index_def)
+
+    if conn.exists("minipilot:configuration") == 0:
+        app.logger.info("The configuration does not exist, creating it")
+        initial_configuration = {
+                                    'minipilot_distributed_configuration_enabled': False, # default config is read from env
+                                    'minipilot_rate_limiter_enabled':MINIPILOT_RATE_LIMITER_ENABLED,
+                                    'minipilot_history_enabled': MINIPILOT_HISTORY_ENABLED,
+                                    'minipilot_cache_enabled': MINIPILOT_CACHE_ENABLED
+                                    }
+        conn.json().set("minipilot:configuration", "$", initial_configuration)
 
     if not MINIPILOT_DEBUG:
         @app.errorhandler(Exception)

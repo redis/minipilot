@@ -2,6 +2,7 @@ import datetime
 from functools import wraps
 from flask import Response, request
 
+from src.common.ConfigProvider import ConfigProvider
 from src.common.config import MINIPILOT_RATE_LIMITER_ENABLED, MINIPILOT_RATE_LIMITER_CRITERIA, MINIPILOT_RATE_LIMITER_ALLOW
 from src.common.utils import get_db
 
@@ -10,7 +11,8 @@ def rate_limiter(req):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            if MINIPILOT_RATE_LIMITER_ENABLED:
+            cfg = ConfigProvider()
+            if cfg.is_rate_limiter():
                 if MINIPILOT_RATE_LIMITER_CRITERIA == "session":
                     token_minute = f'minipilot:limiter:{request.headers.get("session-id")}:{str(datetime.datetime.now().minute)}'
                 elif MINIPILOT_RATE_LIMITER_CRITERIA == "ip":

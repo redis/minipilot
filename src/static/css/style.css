@@ -96,3 +96,27 @@ html{
 textarea {
     resize: none;
 }
+
+.redis-yellow{
+    color:#000;
+    background-color: rgb(220 255 30);
+    border-color: rgb(9 26 35);
+}
+/* Style the label to be a flex container */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Space between label text and checkbox */
+    width: 100%; /* Full width of the container */
+    cursor: pointer; /* Pointer cursor for the label */
+}
+
+input[type="checkbox"] {
+    accent-color:  #EEE;
+    width: 20px;
+    height: 20px;
+}
+
+hr{
+   border: 1px solid #ccc;
+}
