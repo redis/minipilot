@@ -21,7 +21,7 @@ Follow these instructions to build and start MiniPilot and a Redis Stack databas
 1. `git clone https://github.com/redis/minipilot.git`
 2. `export OPENAI_API_KEY="your-openai-key"`
 2. `cd minipilot`
-3. `docker-compose build --no-cache && docker-compose up` and wait a couple of minutes until Redis loads the [IMDB movies dataset](https://www.kaggle.com/datasets/ashpalsingh1525/imdb-movies-dataset) in memory
+3. `docker compose build --no-cache && docker compose up -d` and wait a couple of minutes until Redis loads the [IMDB movies dataset](https://www.kaggle.com/datasets/ashpalsingh1525/imdb-movies-dataset) in memory
 4.  Point your browser to [http://127.0.0.1:5007/](http://127.0.0.1:5007), tune the prompt and start chatting
 5. Browse your data with Redis Insight at [http://127.0.0.1:8099](http://127.0.0.1:8099)
 

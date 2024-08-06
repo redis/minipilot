@@ -136,6 +136,7 @@ class RedisRetrievalChain(Core):
         """
 
         # now you can rebuild this using https://js.langchain.com/v0.1/docs/use_cases/code_understanding/#chat
+        # https://python.langchain.com/v0.2/docs/versions/migrating_chains/conversation_retrieval_chain/
         chatbot = ConversationalRetrievalChain.from_llm(llm=streaming_llm,
                                                         retriever=self.__get_retriever_with_score(MINIPILOT_CONTEXT_LENGTH),
                                                         get_chat_history=get_chat_history,
