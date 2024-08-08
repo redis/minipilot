@@ -1,5 +1,3 @@
-version: '1.0'
-
 services:
   redis:
     container_name: redis-minipilot
