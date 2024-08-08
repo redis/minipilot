@@ -3,14 +3,17 @@ version: '1.0'
 services:
   redis:
     container_name: redis-minipilot
-    image: redis/redis-stack:latest
+    image: redis/redis-stack:7.4.0-v0
     ports:
       - "6399:6379"
       - "8099:8001"
     networks:
       - minipilot-network
     volumes:
-      - ./data/dump.rdb:/data/dump.rdb
+      - ./data/dump.rdb:/tmp/dump.rdb
+      - ./data/entrypoint.sh:/data/entrypoint.sh
+      - ./data/wrapper.sh:/data/wrapper.sh
+    entrypoint: ["/bin/sh", "/data/wrapper.sh"]
 
   minipilot:
     build: .

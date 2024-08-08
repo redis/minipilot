@@ -54,7 +54,9 @@ function bubbles(endpoint, history, callback=undefined){
                 etfl = Date.now() - now;
                 bubble.attr('data-etfl', etfl);
                 bubble.attr('data-ttft', ttft);
-                bubble.attr("title", `Time to first token is ${ttft}ms. Elapsed time first to last token is ${etfl}ms`);
+                bubble.append($('<hr class="my-3 has-background-light">'));
+                bubble.append(`<p class="is-size-6 has-text-grey-dark">Time to first token is ${ttft}ms. Elapsed time first to last token is ${etfl}ms</p>`);
+                $(document).scrollTop($(document).height());
             }
         });
         return false;
