@@ -5,8 +5,6 @@ services:
     ports:
       - "6399:6379"
       - "8099:8001"
-    networks:
-      - minipilot-network
     volumes:
       - ./data/dump.rdb:/tmp/dump.rdb
       - ./data/entrypoint.sh:/data/entrypoint.sh
@@ -26,10 +24,3 @@ services:
       - MINIPILOT_ENDPOINT=http://127.0.0.1:8000
     ports:
       - "5007:8000"
-    networks:
-      - minipilot-network
-
-networks:
-  minipilot-network:
-    name: minipilot_network
-    driver: bridge
