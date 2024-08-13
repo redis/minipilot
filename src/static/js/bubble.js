@@ -50,7 +50,7 @@ function bubbles(endpoint, history, callback=undefined){
                 }
             },
             success: function(data) {
-                $(document).ready(function(){$('a').attr('target', '_blank');});
+                $('.bubble-left a').attr('target', '_blank');
                 etfl = Date.now() - now;
                 bubble.attr('data-etfl', etfl);
                 bubble.attr('data-ttft', ttft);

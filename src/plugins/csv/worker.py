@@ -41,7 +41,7 @@ def csv_loader_task(filename):
 
     # If there is no index for RAG, this is the first index; then, the user should make it current from the UI
     try:
-        conn.ft('convai_rag_alias').info()
+        conn.ft('minipilot_rag_alias').info()
     except redis.exceptions.ResponseError as e:
         logging.warning(f"No alias exists for semantic search. Associate the alias to the desired index")
 
