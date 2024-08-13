@@ -9,6 +9,7 @@ function bubbles(endpoint, history, callback=undefined){
             $( "#conversation" ).append('<div class="bubble bubble-left">' + converter.makeHtml(value.content) + '</div>');
     });
     scroll();
+    $('.bubble-left a').attr('target', '_blank');
 
     $("#chat").click(function(e){
         e.preventDefault();
@@ -50,7 +51,7 @@ function bubbles(endpoint, history, callback=undefined){
                 }
             },
             success: function(data) {
-                $('.bubble-left a').attr('target', '_blank');
+                bubble.find('a').attr('target', '_blank');
                 etfl = Date.now() - now;
                 bubble.attr('data-etfl', etfl);
                 bubble.attr('data-ttft', ttft);
