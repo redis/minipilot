@@ -21,18 +21,6 @@ def csv_loader_task(filename):
         "algorithm": "HNSW"
     }
 
-    """
-    # Use index_schema if you would like to index other fields. Not used by semantic search but for hybrid search if required
-    index_schema = {
-        "tag": [{"name": "genre"},
-                {"name": "country"}],
-        "text": [{"name": "names"}],
-        "numeric": [{"name": "revenue"},
-                    {"name": "score"},
-                    {"name": "date_x"}]
-    }
-    """
-
     # Validate there is an OPENAI_API_KEY passed in the environment
     try:
         embedding_model = OpenAIEmbeddings(model="text-embedding-ada-002")
@@ -45,19 +33,16 @@ def csv_loader_task(filename):
     except redis.exceptions.ResponseError as e:
         logging.warning(f"No alias exists for semantic search. Associate the alias to the desired index")
 
-    # https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them
-    # the default model is "text-embedding-ada-002".
     # max input is 8191 tokens
     # 1 token ~= 4 chars in English
     # 8191 x 4 = 32764 maximum characters that can be represented by a vector embedding
-    # choosing 10000 as chunk size seems ok
     doc_splitter = RecursiveCharacterTextSplitter(  chunk_size=10000,
                                                     chunk_overlap=50,
                                                     length_function=len,
                                                     add_start_index=True
                                                     )
 
-    # There may be many strategies to index a CSV, for the benefit of simplicity,
+    # There are many strategies to index a CSV, for the benefit of simplicity,
     # here we convert a dictionary to a string representation where each key-value pair is on a separate line and formatted as key: value
     with open(filename, encoding='utf-8') as csvf:
         csvReader = csv.DictReader(csvf)
@@ -65,19 +50,6 @@ def csv_loader_task(filename):
             row_str = '\n'.join([f"{key}: {value}" for key, value in row.items()])
             splits = doc_splitter.split_text(row_str)
             metadatas = None
-
-            """
-            # If there is a index_schema defined, add metadata here
-            unix_timestamp = int(datetime.strptime(row['date_x'].strip(), "%m/%d/%Y").timestamp())
-            metadatas = {"names": row['names'],
-                         "genre": row['genre'],
-                         "country": row['country'],
-                         "revenue": row['revenue'],
-                         "score": row['score'],
-                         "date_x": unix_timestamp}
-                         
-            metadatas=[metadatas] * len(splits),
-            """
 
             if len(splits) > 0:
                 # Ingest the document
@@ -88,4 +60,3 @@ def csv_loader_task(filename):
                                  index_schema=index_schema,
                                  vector_schema=vector_schema,
                                  redis_url=generate_redis_connection_string(REDIS_CFG["host"], REDIS_CFG["port"], REDIS_CFG["password"]))
-
