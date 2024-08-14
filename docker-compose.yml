@@ -22,8 +22,5 @@ services:
       - DB_PORT=6379
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - MINIPILOT_ENDPOINT=http://127.0.0.1:8000
-      - MINIPILOT_RATE_LIMITER_ENABLED=False
-      - MINIPILOT_CACHE_ENABLED=False
-      - MINIPILOT_HISTORY_ENABLED=False
     ports:
       - "5007:8000"
