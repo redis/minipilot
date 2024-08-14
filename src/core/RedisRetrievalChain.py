@@ -143,19 +143,19 @@ class RedisRetrievalChain(Core):
                                                         return_generated_question=True,
                                                         verbose=MINIPILOT_DEBUG,
                                                         return_source_documents=True,
-                                                        condense_question_llm = ChatOpenAI(temperature=0, model=self.model),
+                                                        condense_question_llm = ChatOpenAI(temperature=0, model=self.model),    # LLM Memory part 2: condense
                                                         combine_docs_chain_kwargs={'prompt': qa_prompt})                        # Agentic Memory
 
         result = None
         try:
             result = chatbot.invoke({"question": q, "chat_history": redis_history})
 
+            references = {}
+            for doc in result['source_documents']:
+                references[doc.metadata['id'].split('idx:')[-1]] = doc.metadata
+
             # decide if conversation history should be saved
             if self.cfg.is_memory():
-                references = {}
-                for doc in result['source_documents']:
-                    references[doc.metadata['id'].split('idx:')[-1]] = doc.metadata
-
                 redis_history.add_user_message(result["question"])
                 redis_history.add_message(BaseMessage(content=result["answer"], type="ai", additional_kwargs=references))
 
