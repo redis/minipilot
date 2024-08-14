@@ -12,14 +12,6 @@ from src.common.utils import generate_redis_connection_string, get_filename_with
 
 
 def csv_loader_task(filename):
-    conn = redis.StrictRedis(host=REDIS_CFG["host"], port=REDIS_CFG["port"], password=REDIS_CFG["password"])
-
-    # Create a new index, named by CSV file and datetime
-    index_name = f"minipilot_rag_{get_filename_without_extension(filename)}_{datetime.now().strftime('%Y%m%d_%H%M%S')}_idx"
-    index_schema = None
-    vector_schema = {
-        "algorithm": "HNSW"
-    }
 
     # Validate there is an OPENAI_API_KEY passed in the environment
     try:
@@ -27,12 +19,8 @@ def csv_loader_task(filename):
     except Exception as e:
         logging.error(e)
 
-    # If there is no index for RAG, this is the first index; then, the user should make it current from the UI
-    try:
-        conn.ft('minipilot_rag_alias').info()
-    except redis.exceptions.ResponseError as e:
-        logging.warning(f"No alias exists for semantic search. Associate the alias to the desired index")
 
+    # Instantiate chunker.=:
     # max input is 8191 tokens
     # 1 token ~= 4 chars in English
     # 8191 x 4 = 32764 maximum characters that can be represented by a vector embedding
@@ -42,8 +30,18 @@ def csv_loader_task(filename):
                                                     add_start_index=True
                                                     )
 
+    # Details for new new Redis Index, named by CSV file and datetime
+    index_name = f"minipilot_rag_{get_filename_without_extension(filename)}_{datetime.now().strftime('%Y%m%d_%H%M%S')}_idx"
+    index_schema = None
+    vector_schema = {
+        "algorithm": "HNSW"
+    }
+
     # There are many strategies to index a CSV, for the benefit of simplicity,
     # here we convert a dictionary to a string representation where each key-value pair is on a separate line and formatted as key: value
+    # 
+    # So for each row
+    # columnname1:rowxvalue1\n columnname2:rowxvalue2\n 
     with open(filename, encoding='utf-8') as csvf:
         csvReader = csv.DictReader(csvf)
         for row in csvReader:
@@ -60,3 +58,11 @@ def csv_loader_task(filename):
                                  index_schema=index_schema,
                                  vector_schema=vector_schema,
                                  redis_url=generate_redis_connection_string(REDIS_CFG["host"], REDIS_CFG["port"], REDIS_CFG["password"]))
+
+
+    # If there is no index for RAG, this is the first index; then, we want to warnthe user should to make it current from the UI
+    conn = redis.StrictRedis(host=REDIS_CFG["host"], port=REDIS_CFG["port"], password=REDIS_CFG["password"])
+    try:
+        conn.ft('minipilot_rag_alias').info()
+    except redis.exceptions.ResponseError as e:
+        logging.warning(f"No alias exists for semantic search. Associate the alias to the desired index")
