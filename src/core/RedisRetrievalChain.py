@@ -161,9 +161,8 @@ class RedisRetrievalChain(Core):
 
             """
             Update the cache only if caching is enabled AND there was context retrieved for RAG
-            in such a case, we may save the generated standalone question, which also includes summarization of the history
-            but for now we save the original question, or a user repeating over and over a question, will never see his own cached question. 
-            Having references means that there is semantic content available in the database, so the question should make sense
+            First, we save the generated standalone question, which also includes summarization of the history
+            Second, having references means that there is semantic content available in the database, so the question should make sense
             and it can be stored, otherwise the following might happen:
             1. ask a question "can this or that happen?"
             2. get references for RAG, forward the prompt to the LMM and get an answer, hence cache the pair question/asnwer
