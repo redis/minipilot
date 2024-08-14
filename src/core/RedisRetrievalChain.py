@@ -151,12 +151,12 @@ class RedisRetrievalChain(Core):
         try:
             result = chatbot.invoke({"question": q, "chat_history": redis_history})
 
+            references = {}
+            for doc in result['source_documents']:
+                references[doc.metadata['id'].split('idx:')[-1]] = doc.metadata
+
             # decide if conversation history should be saved
             if self.cfg.is_memory():
-                references = {}
-                for doc in result['source_documents']:
-                    references[doc.metadata['id'].split('idx:')[-1]] = doc.metadata
-
                 redis_history.add_user_message(result["question"])
                 redis_history.add_message(BaseMessage(content=result["answer"], type="ai", additional_kwargs=references))
 
