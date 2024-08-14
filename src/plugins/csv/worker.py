@@ -13,14 +13,14 @@ from src.common.utils import generate_redis_connection_string, get_filename_with
 
 def csv_loader_task(filename):
 
-    # Validate there is an OPENAI_API_KEY passed in the environment
+    # Fail fast: validate there is an OPENAI_API_KEY passed in the environment
     try:
         embedding_model = OpenAIEmbeddings(model="text-embedding-ada-002")
     except Exception as e:
         logging.error(e)
 
 
-    # Instantiate chunker.=:
+    # Instantiate chunking:
     # max input is 8191 tokens
     # 1 token ~= 4 chars in English
     # 8191 x 4 = 32764 maximum characters that can be represented by a vector embedding
@@ -30,7 +30,7 @@ def csv_loader_task(filename):
                                                     add_start_index=True
                                                     )
 
-    # Details for new new Redis Index, named by CSV file and datetime
+    # Details for new new Redis vector index, named by CSV file and datetime, using HSNW
     index_name = f"minipilot_rag_{get_filename_without_extension(filename)}_{datetime.now().strftime('%Y%m%d_%H%M%S')}_idx"
     index_schema = None
     vector_schema = {
