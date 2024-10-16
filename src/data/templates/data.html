@@ -104,10 +104,10 @@
                             <a class="mr-5" href="{{ url_for('data_bp.idx_current',name=idx['name']) }}">
                                 Make current
                             </a>
+                            {% endif %}
                             <a class="delete_idx_anchor" href="{{ url_for('data_bp.idx_delete',name=idx['name']) }}">
                                 Delete
                             </a>
-                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
