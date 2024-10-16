@@ -15,7 +15,7 @@ Then, decide where you want to run your Redis Stack instance.
 
 ## Local setup
 
-To run MiniPilot on your laptop, just clone the repository.
+To run Minipilot on your laptop, just clone the repository.
 
 ```commandline
 git clone https://github.com/redis/MiniPilot.git
@@ -81,10 +81,10 @@ DB_PORT                The port of your Redis Stack instance or Redis Cloud data
 DB_PWD                 The password of your Redis Stack instance or Redis Cloud database
 DB_SSL                 If you would like to connect using SSL (mandatory for Redis Cloud databases)
 OPENAI_API_KEY         Your OpenAI token
-MINIPILOT_ENDPOINT     MiniPilot is a REST API service, but the internal chat interface uses the REST API, too, on the default exposed port 8000. You can just leave http://127.0.0.1:8000
+MINIPILOT_ENDPOINT     Minipilot is a REST API service, but the internal chat interface uses the REST API, too, on the default exposed port 8000. You can just leave http://127.0.0.1:8000
 ```
 
-## Configuring MiniPilot
+## Configuring Minipilot
 
 1. point your browser to [http://127.0.0.1:5005/](http://127.0.0.1:5005/)
 2. From the `data` tab, load a CSV dataset, and index it. You can try the [IMDB movies dataset](https://www.kaggle.com/datasets/ashpalsingh1525/imdb-movies-dataset)

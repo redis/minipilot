@@ -1,4 +1,4 @@
-# MiniPilot
+# Minipilot
 
 This application implements a chatbot you can train with your data. From the GUI you will be able to:
 
@@ -16,7 +16,7 @@ The system uses:
 
 ## Quickstart
 
-Follow these instructions to build and start MiniPilot and a Redis Stack database as containers on your laptop. For more installation methods, refer to the docs.
+Follow these instructions to build and start Minipilot and a Redis Stack database as containers on your laptop. For more installation methods, refer to the docs.
 
 1. `git clone https://github.com/redis/minipilot.git`
 2. `export OPENAI_API_KEY="your-openai-key"`

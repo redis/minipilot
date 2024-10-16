@@ -1,6 +1,6 @@
 # Usage
 
-MiniPilot is a highly configurable server. Read the environment variables to customize the server's behavior.
+Minipilot is a highly configurable server. Read the environment variables to customize the server's behavior.
 
 | Variable                               | Description                                                                                                                    | Default           |
 |----------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|-------------------|

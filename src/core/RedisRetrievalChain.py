@@ -92,7 +92,7 @@ class RedisRetrievalChain(Core):
                 callback_fn.q.put(cached[0]['response'])
                 callback_fn.q.put(STOP_ITEM)
 
-                # The question is in the cache, but I want to save the conversation in the history too
+                # The question is in the cache, but we want to save the conversation in the history too
                 metadata = {}
                 if 'metadata' in cached[0]:
                     metadata = cached[0]['metadata']
@@ -100,7 +100,6 @@ class RedisRetrievalChain(Core):
                 redis_history.add_message(BaseMessage(content=cached[0]['response'], type="ai", additional_kwargs=metadata))
                 return
 
-        # Note that a try/catch is not needed here. Callback takes care of all errors in `on_llm_error`
         # llm = OpenAI(streaming=True, callbacks=[callback_fn])
         streaming_llm = ChatOpenAI(
             model_name=self.model,
@@ -138,14 +137,14 @@ class RedisRetrievalChain(Core):
         # now you can rebuild this using https://js.langchain.com/v0.1/docs/use_cases/code_understanding/#chat
         # https://python.langchain.com/v0.2/docs/versions/migrating_chains/conversation_retrieval_chain/
         chatbot = ConversationalRetrievalChain.from_llm(llm=streaming_llm,
-                                                        retriever=self.__get_retriever_with_score(MINIPILOT_CONTEXT_LENGTH),
-                                                        get_chat_history=get_chat_history,
+                                                        retriever=self.__get_retriever_with_score(MINIPILOT_CONTEXT_LENGTH),    # RAG
+                                                        get_chat_history=get_chat_history,                                      # LLM Memory
                                                         rephrase_question=False,
                                                         return_generated_question=True,
                                                         verbose=MINIPILOT_DEBUG,
                                                         return_source_documents=True,
-                                                        condense_question_llm = ChatOpenAI(temperature=0, model=self.model),
-                                                        combine_docs_chain_kwargs={'prompt': qa_prompt})
+                                                        condense_question_llm = ChatOpenAI(temperature=0, model=self.model),    # LLM Memory part 2: condense
+                                                        combine_docs_chain_kwargs={'prompt': qa_prompt})                        # Agentic Memory
 
         result = None
         try:
@@ -162,9 +161,8 @@ class RedisRetrievalChain(Core):
 
             """
             Update the cache only if caching is enabled AND there was context retrieved for RAG
-            in such a case, we may save the generated standalone question, which also includes summarization of the history
-            but for now we save the original question, or a user repeating over and over a question, will never see his own cached question. 
-            Having references means that there is semantic content available in the database, so the question should make sense
+            First, we save the generated standalone question, which also includes summarization of the history
+            Second, having references means that there is semantic content available in the database, so the question should make sense
             and it can be stored, otherwise the following might happen:
             1. ask a question "can this or that happen?"
             2. get references for RAG, forward the prompt to the LMM and get an answer, hence cache the pair question/asnwer
