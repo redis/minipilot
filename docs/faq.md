@@ -2,21 +2,21 @@
 
 ## What is this?
 
-MiniPilot is a GenAI-assisted chatbot. This demo is a minimal implementation (hence the name "MiniPilot"!) which allows you to import data as CSV, process it and store it in a Redis vector database.
-You can clone and test the repository, fork it, change the code and, if you like, contribute to the repository. It can be extended to import data from other document formats (like PDF) or crawl and scrape web resources. Ad-hoc connectors can be developed to extend the MiniPilot.
+Minipilot is a GenAI-assisted chatbot. This demo is a minimal implementation (hence the name "Minipilot"!) which allows you to import data as CSV, process it and store it in a Redis vector database.
+You can clone and test the repository, fork it, change the code and, if you like, contribute to the repository. It can be extended to import data from other document formats (like PDF) or crawl and scrape web resources. Ad-hoc connectors can be developed to extend the Minipilot.
 
-## What features can I find in MiniPilot?
+## What features can I find in Minipilot?
 
-MiniPilot supports:
+Minipilot supports:
 
 - Conversation history by session, to make sense of the interactions of a user
 - Semantic cache, to store and retrieve past interactions (from all the conversations of all the users). This speeds up the system, because if an answer is in the cache, there is no need to invoke the OpenAI chat endpoint at all.
 - Rate limiter, a basic implementation based on Redis
 - Configurability, to tune up every single piece of the chatbot
-- REST API: the MiniPilot can serve remote users over a REST API. The UI is for demonstrative purposes. 
+- REST API: the Minipilot can serve remote users over a REST API. The UI is for demonstrative purposes. 
 - Centralized Redis session, so application servers are purely stateless, which helps scalability of the service
 
-## What can I do with MiniPilot?
+## What can I do with Minipilot?
 
 You can use the code for self-learning, extend it as desired and use in production. The source code sheds light on all the standard components used in these kinds of systems:
 
