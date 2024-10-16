@@ -13,12 +13,12 @@ from src.common.utils import generate_redis_connection_string, get_filename_with
 
 def csv_loader_task(filename):
 
-    # Fail fast: validate there is an OPENAI_API_KEY passed in the environment
+    # Instantiate the embedding model
+    # (Fail fast: validate there is an OPENAI_API_KEY passed in the environment)
     try:
         embedding_model = OpenAIEmbeddings(model="text-embedding-ada-002")
     except Exception as e:
         logging.error(e)
-
 
     # Instantiate chunking:
     # max input is 8191 tokens
@@ -39,9 +39,8 @@ def csv_loader_task(filename):
 
     # There are many strategies to index a CSV, for the benefit of simplicity,
     # here we convert a dictionary to a string representation where each key-value pair is on a separate line and formatted as key: value
-    # 
     # So for each row
-    # columnname1:rowxvalue1\n columnname2:rowxvalue2\n 
+    # columnname1:rowxvalue1\n columnname2:rowxvalue2\n
     with open(filename, encoding='utf-8') as csvf:
         csvReader = csv.DictReader(csvf)
         for row in csvReader:
