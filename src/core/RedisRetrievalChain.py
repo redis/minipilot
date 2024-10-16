@@ -93,12 +93,14 @@ class RedisRetrievalChain(Core):
                 callback_fn.q.put(STOP_ITEM)
 
                 # The question is in the cache, but we want to save the conversation in the history too
-                metadata = {}
-                if 'metadata' in cached[0]:
-                    metadata = cached[0]['metadata']
-                redis_history.add_user_message(q)
-                redis_history.add_message(BaseMessage(content=cached[0]['response'], type="ai", additional_kwargs=metadata))
-                return
+                # but only if the memory is enabled
+                if self.cfg.is_memory():
+                    metadata = {}
+                    if 'metadata' in cached[0]:
+                        metadata = cached[0]['metadata']
+                    redis_history.add_user_message(q)
+                    redis_history.add_message(BaseMessage(content=cached[0]['response'], type="ai", additional_kwargs=metadata))
+                    return
 
         # llm = OpenAI(streaming=True, callbacks=[callback_fn])
         streaming_llm = ChatOpenAI(
