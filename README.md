@@ -25,6 +25,12 @@ Follow these instructions to build and start Minipilot and a Redis Stack databas
 4.  Point your browser to [http://127.0.0.1:5007/](http://127.0.0.1:5007), tune the prompt and start chatting
 5. Browse your data with Redis Insight at [http://127.0.0.1:8099](http://127.0.0.1:8099)
 
+For troubleshooting, you can copy the execution log from the container to the host.
+
+```commandline
+docker cp minipilot:/app/gunicorn.log .
+```
+
 ## Documentation
 - [Installation Guide](docs/installation.md)
 - [Usage Guide](docs/usage.md)
