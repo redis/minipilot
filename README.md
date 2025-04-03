@@ -33,7 +33,7 @@ For troubleshooting, you can copy the execution log from the container to the ho
 docker cp minipilot:/app/gunicorn.log .
 ```
 
-Note that if your OpenAI key is not valid or expired, restart the Minipilot container (or rebuild it).
+Note that if your OpenAI key is not valid or expired, set the correct key as environment variable and restart the Minipilot container (or rebuild it).
 
 ## Documentation
 - [Installation Guide](docs/installation.md)
